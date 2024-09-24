@@ -12,12 +12,16 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
+
+# Base Directory
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Cloudinary storage configuration for storing media files
 if os.path.exists('env.py'):
     import env
-    
-CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL')
+
+CLOUDINARY_URL = os.getenv('CLOUDINARY_URL')
 if not CLOUDINARY_URL:
     raise EnvironmentError("CLOUDINARY_URL environment variable is not set.")
 
@@ -28,23 +32,14 @@ CLOUDINARY_STORAGE = {
 MEDIA_URL = '/media/'
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+# Secret Key and Debug Mode
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-5*n1)my^v9&*7!7v)vw1fu5o(&wacu!bls7d0)7_#zykxv$4(=')
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
+# Allowed Hosts
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-5*n1)my^v9&*7!7v)vw1fu5o(&wacu!bls7d0)7_#zykxv$4(='
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
-
-# Application definition
-
+# Application Definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -52,37 +47,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'dj_rest_auth',
+    'django_filters',
+    'corsheaders',
     'cloudinary_storage',
     'cloudinary',
     'photographers',
 ]
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [(
-        'rest_framework.authentication.SessionAuthentication'
-        if 'DEV' in os.environ
-        else 'dj_rest_auth.jwt_auth.JWTCookieAuthentication'
-    )],
-    'DEFAULT_PAGINATION_CLASS':
-        'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,
-    'DATETIME_FORMAT': '%d %b %Y',
-
-}
-if 'DEV' not in os.environ:
-    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = [
-        'rest_framework.renderers.JSONRenderer',
-    ]
-
-REST_USE_JWT = True
-JWT_AUTH_SECURE = True
-JWT_AUTH_COOKIE = 'my-app-auth'
-JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
-JWT_AUTH_SAMESITE = 'None'
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -90,7 +67,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'cheshire_captures_backend.urls'
+ROOT_URLCONF = 'cheshire_captures.urls'
 
 TEMPLATES = [
     {
@@ -108,23 +85,17 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'cheshire_captures_backend.wsgi.application'
-
+WSGI_APPLICATION = 'cheshire_captures.wsgi.application'
 
 # Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
+        conn_max_age=600
+    )
 }
 
-
 # Password validation
-# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -140,25 +111,46 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-STATIC_URL = 'static/'
+# CORS settings
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '').split(',')
+
+# Rest Framework configuration
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication'
+        if DEBUG else 'dj_rest_auth.jwt_auth.JWTCookieAuthentication'
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
+    ],
+}
+
+REST_USE_JWT = True
+JWT_AUTH_SECURE = True
+JWT_AUTH_COOKIE = 'cheshire-captures-auth'
+JWT_AUTH_REFRESH_COOKIE = 'cheshire-captures-refresh'
+JWT_AUTH_SAMESITE = 'None'
+
+# Cloudinary configuration for media
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+CLOUDINARY_STORAGE = {
+    'CLOUDINARY_URL': os.getenv('CLOUDINARY_URL')
+}
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
