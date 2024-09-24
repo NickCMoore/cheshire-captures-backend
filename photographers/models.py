@@ -9,8 +9,8 @@ class Photographer(models.Model):
     display_name = models.CharField(max_length=255, blank=True)
     bio = models.TextField(blank=True)
     profile_image = models.ImageField(
-        upload_to='photographer_images/', 
-        default='default_images/placeholder.jpg'
+        upload_to='images/', 
+        default='../zjadqskisbjlyfb5jb8i'
     )
     location = models.CharField(max_length=255, blank=True)
     cover_image = models.ImageField(

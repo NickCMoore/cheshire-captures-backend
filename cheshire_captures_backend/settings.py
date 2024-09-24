@@ -90,11 +90,19 @@ WSGI_APPLICATION = 'cheshire_captures_backend.wsgi.application'
 
 # Database
 DATABASES = {
-    'default': dj_database_url.config(
-        default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
-        conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',  # Default to SQLite
+        'NAME': str(BASE_DIR / 'db.sqlite3'),
+    }
 }
+
+if os.getenv('DATABASE_URL'):
+    DATABASES['default'] = dj_database_url.config(
+        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
+        conn_max_age=600,
+        engine='django.db.backends.postgresql',
+    )
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
