@@ -82,8 +82,26 @@ INSTALLED_APPS = [
 
 SITE_ID = 1
 
+# Authentication Backends
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',  
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+# AllAuth Settings
+ACCOUNT_EMAIL_REQUIRED = True  
+ACCOUNT_AUTHENTICATION_METHOD = 'username'  
+ACCOUNT_EMAIL_VERIFICATION = 'optional' 
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True 
+ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
+
+
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
