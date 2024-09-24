@@ -68,7 +68,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'cheshire_captures.urls'
+ROOT_URLCONF = 'cheshire_captures_backend.urls'
 
 TEMPLATES = [
     {
@@ -86,7 +86,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'cheshire_captures.wsgi.application'
+WSGI_APPLICATION = 'cheshire_captures_backend.wsgi.application'
 
 # Database
 DATABASES = {
@@ -123,7 +123,8 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # CORS settings
-CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '').split(',')
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:3000').split(',')
+CORS_ALLOW_CREDENTIALS = True
 
 # Rest Framework configuration
 REST_FRAMEWORK = {
