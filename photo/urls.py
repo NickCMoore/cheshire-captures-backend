@@ -4,6 +4,7 @@ from .views import PhotoViewSet
 
 router = DefaultRouter()
 router.register(r'photos', PhotoViewSet, basename='photo')
+router.register(r'tags', TagViewSet, basename='tag')
 
 urlpatterns = [
     path('', include(router.urls)),
