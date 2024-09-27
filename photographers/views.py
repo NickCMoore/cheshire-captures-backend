@@ -46,6 +46,7 @@ class FollowViewSet(viewsets.ModelViewSet):
             return Response({'error': 'Not following'}, status=400)
 
 class TopPhotographersView(generics.ListAPIView):
+    queryset = Photographer.objects.all()
     serializer_class = PhotographerSerializer
 
     def get_queryset(self):
