@@ -1,7 +1,10 @@
-from django.urls import path
-from .views import PhotographerList, PhotographerDetail
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import PhotographerViewSet
+
+router = DefaultRouter()
+router.register(r'photographers', PhotographerViewSet, basename='photographer')
 
 urlpatterns = [
-    path('', PhotographerList.as_view(), name='photographer-list'),
-    path('<int:pk>/', PhotographerDetail.as_view(), name='photographer-detail'),
+    path('', include(router.urls)),
 ]
