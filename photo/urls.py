@@ -12,4 +12,6 @@ urlpatterns = [
     path('', include(router.urls)),
     path('photos/<int:pk>/like/', LikeViewSet.as_view({'post': 'like'}), name='photo-like'),
     path('photos/<int:pk>/unlike/', LikeViewSet.as_view({'post': 'unlike'}), name='photo-unlike'),
+    path('photos/<int:pk>/rate/', PhotoViewSet.as_view({'post': 'rate_photo'}), name='photo-rate'), 
+    path('photos/top-rated/', PhotoViewSet.as_view({'get': 'top_rated'}), name='photo-top-rated'),
 ]
