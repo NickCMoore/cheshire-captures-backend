@@ -1,4 +1,4 @@
-from rest_framework import viewsets, permissions, filters
+from rest_framework import viewsets, permissions, filters, status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Photo, Tag, Like, Comment
@@ -6,6 +6,8 @@ from .serializers import PhotoSerializer, TagSerializer, LikeSerializer, Comment
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.filters import SearchFilter, OrderingFilter
 from .filters import PhotoFilter
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 # Custom pagination class to control the number of items per page
 class StandardResultsSetPagination(PageNumberPagination):
