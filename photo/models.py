@@ -1,5 +1,5 @@
 from django.db import models
-from photographers.models import Photographer
+from photographers.models import Photographer  # Import Photographer model from photographers app
 
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -26,4 +26,14 @@ class Photo(models.Model):
     def __str__(self):
         return self.title
 
+class Like(models.Model):
+    photographer = models.ForeignKey(Photographer, on_delete=models.CASCADE, related_name='likes')
+    photo = models.ForeignKey(Photo, on_delete=models.CASCADE, related_name='likes')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('photographer', 'photo')
+
+    def __str__(self):
+        return f"{self.photographer.user.username} likes {self.photo.title}"
 
