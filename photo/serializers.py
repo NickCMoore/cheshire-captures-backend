@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Photo, Tag
+from .models import Photo, Tag, Like
 
 class PhotoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,3 +11,8 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = '__all__'
+
+class LikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Like
+        fields = ['id', 'photographer', 'photo', 'created_at']
