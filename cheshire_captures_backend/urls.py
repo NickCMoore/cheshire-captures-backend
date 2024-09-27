@@ -23,7 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('photographers.urls')),
     path('api/', include('photo.urls')),
-    path('api/', include('messages.urls')),
+    path('api/', include('messaging.urls')),
     path('auth/', include('dj_rest_auth.urls')),
     path('auth/registration/', include('dj_rest_auth.registration.urls')),
     path('', root_route, name='root'),
