@@ -6,7 +6,7 @@ router = DefaultRouter()
 router.register(r'photos', PhotoViewSet, basename='photo')
 router.register(r'tags', TagViewSet, basename='tag')
 router.register(r'likes', LikeViewSet, basename='like')
-router.register(r'comments', CommentViewSet)
+router.register(r'comments', CommentViewSet, basename='comment')
 
 urlpatterns = [
     path('', include(router.urls)),
