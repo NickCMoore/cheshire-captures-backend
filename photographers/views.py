@@ -16,7 +16,6 @@ class PhotographerPagination(PageNumberPagination):
     max_page_size = 50
 
     def get_page_size(self, request):
-        # Return the custom page size if specified in request, but limit to max_page_size
         page_size = super().get_page_size(request)
         return min(page_size, self.max_page_size) if page_size else self.page_size
 

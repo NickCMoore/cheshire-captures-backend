@@ -5,8 +5,9 @@ from .serializers import MessageSerializer
 from photographers.permissions import IsOwnerOrReadOnly
 
 class MessageViewSet(viewsets.ModelViewSet):
+    queryset = Message.objects.all()
     serializer_class = MessageSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly]
 
     def get_queryset(self):
         user = self.request.user.photographer
