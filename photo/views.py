@@ -1,7 +1,7 @@
 from rest_framework import viewsets, permissions
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from .models import Photo, Tag, Like
-from .serializers import PhotoSerializer, TagSerializer, LikeSerializer
+from .models import Photo, Tag, Like, Comment
+from .serializers import PhotoSerializer, TagSerializer, LikeSerializer, CommentSerializer
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.filters import SearchFilter, OrderingFilter
 
@@ -40,6 +40,15 @@ class TagViewSet(viewsets.ModelViewSet):
 class LikeViewSet(viewsets.ModelViewSet):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(photographer=self.request.user.photographer)
+
+# ViewSet for handling CRUD operations for Comment model
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):

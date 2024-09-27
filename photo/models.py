@@ -1,6 +1,5 @@
 from django.db import models
 from photographers.models import Photographer
-from .models import Photo
 
 
 class Tag(models.Model):

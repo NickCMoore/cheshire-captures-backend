@@ -18,7 +18,7 @@ class LikeSerializer(serializers.ModelSerializer):
         fields = ['id', 'photographer', 'photo', 'created_at']
 
 class CommentSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
+    photographer = serializers.ReadOnlyField(source='photographer.user.username')
 
     class Meta:
         model = Comment
