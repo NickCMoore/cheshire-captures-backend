@@ -1,4 +1,4 @@
-from rest_framework import viewsets, permissions, filters,generics
+from rest_framework import viewsets, permissions, filters, generics
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from django.db.models import Count, Sum, F
