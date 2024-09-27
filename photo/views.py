@@ -47,6 +47,31 @@ class LikeViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(photographer=self.request.user.photographer)
 
+    @action(detail=True, methods=['post'])
+    def like(self, request, pk=None):
+        try:
+            photo = Photo.objects.get(pk=pk)
+            photographer = request.user.photographer
+            if Like.objects.filter(photo=photo, photographer=photographer).exists():
+                return Response({'status': 'Already liked'}, status=status.HTTP_400_BAD_REQUEST)
+            Like.objects.create(photo=photo, photographer=photographer)
+            return Response({'status': 'Photo liked'}, status=status.HTTP_201_CREATED)
+        except Photo.DoesNotExist:
+            return Response({'status': 'Photo not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    @action(detail=True, methods=['post'])
+    def unlike(self, request, pk=None):
+        try:
+            photo = Photo.objects.get(pk=pk)
+            photographer = request.user.photographer
+            like = Like.objects.filter(photo=photo, photographer=photographer)
+            if not like.exists():
+                return Response({'status': 'Not liked yet'}, status=status.HTTP_400_BAD_REQUEST)
+            like.delete()
+            return Response({'status': 'Photo unliked'}, status=status.HTTP_204_NO_CONTENT)
+        except Photo.DoesNotExist:
+            return Response({'status': 'Photo not found'}, status=status.HTTP_404_NOT_FOUND)
+
 # ViewSet for handling CRUD operations for Comment model
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
