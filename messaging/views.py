@@ -1,6 +1,6 @@
 from rest_framework import viewsets, permissions
 from rest_framework.permissions import IsAuthenticated
-from .models import messaging
+from .models import Message
 from .serializers import MessageSerializer
 from photographers.permissions import IsOwnerOrReadOnly
 
