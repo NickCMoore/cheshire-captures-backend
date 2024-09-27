@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Photo, Tag, Like
+from .models import Photo, Tag, Like, Comment
 
 class PhotoSerializer(serializers.ModelSerializer):
     class Meta:
