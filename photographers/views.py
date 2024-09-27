@@ -1,6 +1,7 @@
-from rest_framework import viewsets, permissions, filters
+from rest_framework import viewsets, permissions, filters,generics
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
+from django.db.models import Count, Sum, F
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Photographer, Follow
 from .serializers import PhotographerSerializer, FollowSerializer
@@ -43,3 +44,11 @@ class FollowViewSet(viewsets.ModelViewSet):
             return Response({'status': 'unfollowed'})
         except Follow.DoesNotExist:
             return Response({'error': 'Not following'}, status=400)
+
+class TopPhotographersView(generics.ListAPIView):
+    serializer_class = PhotographerSerializer
+
+    def get_queryset(self):
+        return Photographer.objects.annotate(
+            follower_count=Count('followers')
+        ).order_by('-follower_count')

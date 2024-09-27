@@ -8,6 +8,8 @@ class Photographer(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     display_name = models.CharField(max_length=255, blank=True)
     bio = models.TextField(blank=True)
+    follower_count = models.PositiveIntegerField(default=0)
+    total_likes = models.PositiveIntegerField(default=0)
     profile_image = models.ImageField(
         upload_to='images/', 
         default='../zjadqskisbjlyfb5jb8i'
@@ -27,11 +29,11 @@ class Photographer(models.Model):
     def __str__(self):
         return f"{self.display_name} ({self.user.username})"
 
-def create_photographer(sender, instance, created, **kwargs):
-    if created:
-        Photographer.objects.create(user=instance)
+    def create_photographer(sender, instance, created, **kwargs):
+        if created:
+            Photographer.objects.create(user=instance)
 
-post_save.connect(create_photographer, sender=User)
+    post_save.connect(create_photographer, sender=User)
 
 class Follow(models.Model):
     follower = models.ForeignKey(Photographer, related_name='following', on_delete=models.CASCADE)
