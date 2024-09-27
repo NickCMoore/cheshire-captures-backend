@@ -45,7 +45,8 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
     '*.gitpod.io', 
-    '8000-nickcmoore-cheshirecapt-1t388js0qvn.ws-eu116.gitpod.io' 
+    '8000-nickcmoore-cheshirecapt-1t388js0qvn.ws-eu116.gitpod.io',
+    'https://cheshire-captures-backend-084aac6d9023.herokuapp.com', 
 ]
 
 
