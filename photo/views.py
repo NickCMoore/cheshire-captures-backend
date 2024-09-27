@@ -45,6 +45,12 @@ class LikeViewSet(viewsets.ModelViewSet):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    pagination_class = StandardResultsSetPagination
+    filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
+    search_fields = ['photographer__display_name', 'photo__title']
+    filterset_fields = ['photo']
+    ordering_fields = ['created_at']
+    ordering = ['-created_at']
 
     def perform_create(self, serializer):
         serializer.save(photographer=self.request.user.photographer)
@@ -79,6 +85,13 @@ class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    pagination_class = StandardResultsSetPagination
+    filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
+    search_fields = ['content', 'photographer__display_name']
+    filterset_fields = ['photo']
+    ordering_fields = ['created_at']
+    ordering = ['-created_at']
 
     def perform_create(self, serializer):
         serializer.save(photographer=self.request.user.photographer)
+
