@@ -21,10 +21,18 @@ class PhotoViewSet(viewsets.ModelViewSet):
     serializer_class = PhotoSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     pagination_class = StandardResultsSetPagination
-    filter_backends = [SearchFilter, OrderingFilter]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_class = PhotoFilter
     search_fields = ['title', 'description', 'category', 'photographer__display_name']
     ordering_fields = ['created_at', 'title']
     ordering = ['-created_at']
+
+    def get_queryset(self):
+        queryset = Photo.objects.all()
+        photographer = self.request.query_params.get('photographer')
+        if photographer is not None:
+            queryset = queryset.filter(photographer__id=photographer)
+        return queryset
 
     def perform_create(self, serializer):
         serializer.save(photographer=self.request.user.photographer) 
