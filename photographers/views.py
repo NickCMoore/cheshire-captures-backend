@@ -1,8 +1,8 @@
 from rest_framework import viewsets, permissions, filters
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import Photographer
-from .serializers import PhotographerSerializer
+from .models import Photographer, Follow
+from .serializers import PhotographerSerializer, FollowSerializer
 from .permissions import IsOwnerOrReadOnly
 
 
@@ -24,3 +24,21 @@ class PhotographerViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+class FollowViewSet(viewsets.ModelViewSet):
+    queryset = Follow.objects.all()
+    serializer_class = FollowSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(follower=self.request.user.photographer)
+
+    @action(detail=True, methods=['POST'])
+    def unfollow(self, request, pk=None):
+        try:
+            following = Photographer.objects.get(pk=pk)
+            follow_instance = Follow.objects.get(follower=request.user.photographer, following=following)
+            follow_instance.delete()
+            return Response({'status': 'unfollowed'})
+        except Follow.DoesNotExist:
+            return Response({'error': 'Not following'}, status=400)

@@ -1,12 +1,10 @@
 from rest_framework import serializers
-from .models import Photographer
+from .models import Photographer, Follow
 
 class PhotographerSerializer(serializers.ModelSerializer):
-    # Custom fields for formatted dates
     created_at = serializers.DateTimeField(format="%d %b %Y", read_only=True)
     updated_at = serializers.DateTimeField(format="%d %b %Y", read_only=True)
-    user = serializers.ReadOnlyField(source='user.username')  # Display the username of the photographer
-
+    user = serializers.ReadOnlyField(source='user.username')  
     class Meta:
         model = Photographer
         fields = [
@@ -33,3 +31,9 @@ class PhotographerSerializer(serializers.ModelSerializer):
         if value and not value.startswith(('http://', 'https://')):
             raise serializers.ValidationError("Twitter link must start with 'http://' or 'https://'.")
         return value
+
+class FollowSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Follow
+        fields = ['follower', 'following', 'created_at']
+        read_only_fields = ['follower']
