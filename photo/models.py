@@ -1,6 +1,7 @@
 from django.db import models
 from photographers.models import Photographer
-from django.contrib.auth.models import User
+from .models import Photo
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -39,7 +40,7 @@ class Like(models.Model):
         return f"{self.photographer.user.username} likes {self.photo.title}"
 
 class Comment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    photographer = models.ForeignKey(Photographer, on_delete=models.CASCADE, related_name='comments')
     photo = models.ForeignKey(Photo, on_delete=models.CASCADE, related_name='comments')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -47,8 +48,7 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['-created_at']
-        unique_together = ('user', 'photo', 'content')
+        unique_together = ('photographer', 'photo', 'content')
 
     def __str__(self):
-        return f"Comment by {self.user.username} on {self.photo.title}"
-
+        return f"Comment by {self.photographer.user.username} on {self.photo.title}"
