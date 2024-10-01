@@ -126,7 +126,7 @@ JWT_AUTH_REFRESH_COOKIE = 'cheshire-captures-refresh'
 JWT_AUTH_SAMESITE = 'None'
 
 REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'drf_api.serializers.CurrentUserSerializer'
+    'USER_DETAILS_SERIALIZER': 'dj_rest_auth.serializers.UserDetailsSerializer'
 }
 
 # Email Configuration
