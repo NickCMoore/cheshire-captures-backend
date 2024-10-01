@@ -40,11 +40,11 @@ logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.DEBUG)
 
 ALLOWED_HOSTS = [
+    os.environ.get('ALLOWED_HOST'),
     '127.0.0.1',
     'localhost',
     '*.gitpod.io', 
     '8000-nickcmoore-cheshirecapt-1t388js0qvn.ws-eu116.gitpod.io',
-    'cheshire-captures-backend-084aac6d9023.herokuapp.com', 
 ]
 
 
@@ -151,13 +151,10 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
 ]
 
-if 'CLIENT_ORIGIN' in os.environ:
-        CORS_ALLOWED_ORIGINS = [
-        os.environ.get('CLIENT_ORIGIN')
-    ]
-else:
+if 'CLIENT_ORIGIN_DEV' in os.environ:
+    extracted_url = re.match(r'^.+-', os.environ.get('CLIENT_ORIGIN_DEV', ''), re.IGNORECASE).group(0)
     CORS_ALLOWED_ORIGIN_REGEXES = [
-        r"^https://.*\.gitpod\.io$",
+        rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
     ]
 
 CORS_ALLOW_CREDENTIALS = True
