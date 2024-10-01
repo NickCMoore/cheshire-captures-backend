@@ -44,16 +44,16 @@ ALLOWED_HOSTS = [
     'localhost',
     '*.gitpod.io', 
     '8000-nickcmoore-cheshirecapt-1t388js0qvn.ws-eu116.gitpod.io',
-    'https://cheshire-captures-backend-084aac6d9023.herokuapp.com', 
+    'cheshire-captures-backend-084aac6d9023.herokuapp.com', 
 ]
 
 
 # CSRF Trusted Origins
 CSRF_TRUSTED_ORIGINS = [
-    'https://8000-nickcmoore-cheshirecapt-1t388js0qvn.ws-eu116.gitpod.io',  
-    'https://*.gitpod.io', 
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
+    'cheshire-captures-backend-084aac6d9023.herokuapp.com',  
+    '*.gitpod.io', 
+    'localhost:8000',
+    '127.0.0.1:8000',
 ]
 
 
