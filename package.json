@@ -1,0 +1,20 @@
+{
+  "name": "cheshire-captures-backend",
+  "version": "1.0.0",
+  "description": "Welcome to Cheshire Captures - a content-sharing platform designed to allow users to browse, comment, like, and share their photographic experiences with the Cheshire community. This project uses the Django REST Framework to build a robust backend API, providing a data interface for the front-end application built with React.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NickCMoore/cheshire-captures-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NickCMoore/cheshire-captures-backend/issues"
+  },
+  "homepage": "https://github.com/NickCMoore/cheshire-captures-backend#readme"
+}

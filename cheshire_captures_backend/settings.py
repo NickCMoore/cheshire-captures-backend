@@ -52,6 +52,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.gitpod.io',
     'http://127.0.0.1:8000',
     'http://localhost:8000',
+    'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',
     'https://cheshire-captures-backend-084aac6d9023.herokuapp.com',
 ]
 
@@ -155,6 +156,11 @@ if 'CLIENT_ORIGIN_DEV' in os.environ:
     CORS_ALLOWED_ORIGIN_REGEXES = [
         rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
     ]
+
+CORS_ALLOWED_ORIGINS = [
+    'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',  
+    'https://cheshire-captures-backend-084aac6d9023.herokuapp.com',
+]
 
 CORS_ALLOW_CREDENTIALS = True
 
