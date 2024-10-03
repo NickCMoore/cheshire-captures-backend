@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 import dj_database_url
 import re
+import logging
 
 # Load environment variables from env.py if it exists
 if os.path.exists('env.py'):
@@ -31,13 +32,11 @@ if not SECRET_KEY:
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 'DEV' in os.environ
-
-import logging
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 logger = logging.getLogger('django.security.DisallowedHost')
 logger.addHandler(logging.StreamHandler())
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.WARNING) 
 
 ALLOWED_HOSTS = [
     os.environ.get('ALLOWED_HOST'),
