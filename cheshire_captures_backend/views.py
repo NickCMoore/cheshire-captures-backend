@@ -1,4 +1,13 @@
-from django.views.generic import TemplateView
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .settings import (
+    JWT_AUTH_COOKIE, JWT_AUTH_REFRESH_COOKIE, JWT_AUTH_SAMESITE,
+    JWT_AUTH_SECURE,
+)
 
-class RootRouteView(TemplateView):
-    template_name = 'index.html'
+
+@api_view()
+def root_route(request):
+    return Response({
+        "message": "Welcome to my Cheshire Captures API!"
+    })
