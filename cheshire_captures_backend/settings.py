@@ -55,6 +55,7 @@ CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_NAME = 'csrftoken'
 
 CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
     'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',
 ]
 
@@ -79,6 +80,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'photo',
     'messaging',
+    'corsheaders',
 ]
 
 SITE_ID = 1
