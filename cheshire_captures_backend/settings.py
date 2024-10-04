@@ -43,7 +43,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.gitpod.io',
     'http://127.0.0.1:8000',
     'http://localhost:8000',
-    '8000-nickcmoore-cheshirecapt-1t388js0qvn.ws-eu116.gitpod.io',
+    'https://8000-nickcmoore-cheshirecapt-1t388js0qvn.ws-eu116.gitpod.io',
     'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',
     'https://cheshire-captures-backend-084aac6d9023.herokuapp.com',
 ]
@@ -130,7 +130,7 @@ ROOT_URLCONF = 'cheshire_captures_backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'build')], 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
