@@ -127,6 +127,18 @@ if 'CLIENT_ORIGIN_DEV' in os.environ:
 
 ROOT_URLCONF = 'cheshire_captures_backend.urls'
 
+WSGI_APPLICATION = 'cheshire_captures_backend.wsgi.application'
+
+DATABASES = {
+    'default': dj_database_url.parse(os.environ.get("DATABASE_URL")) if 'DEV' not in os.environ else {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -143,16 +155,5 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'cheshire_captures_backend.wsgi.application'
-
-DATABASES = {
-    'default': dj_database_url.parse(os.environ.get("DATABASE_URL")) if 'DEV' not in os.environ else {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
