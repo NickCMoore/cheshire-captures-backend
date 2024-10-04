@@ -22,21 +22,13 @@ MEDIA_URL = '/media/'
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-if not SECRET_KEY:
-    raise ImproperlyConfigured("The SECRET_KEY setting must not be empty.")
-
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = 'DEV' in os.environ
 
 logger = logging.getLogger('django.security.DisallowedHost')
 logger.addHandler(logging.StreamHandler())
-logger.setLevel(logging.WARNING) 
+logger.setLevel(logging.WARNING)
 
 ALLOWED_HOSTS = [
     os.environ.get('ALLOWED_HOST'),
@@ -44,8 +36,8 @@ ALLOWED_HOSTS = [
     'localhost',
     '*.gitpod.io', 
     '8000-nickcmoore-cheshirecapt-1t388js0qvn.ws-eu116.gitpod.io',
+    'cheshire-captures-4a500dc7ab0a.herokuapp.com',
 ]
-
 
 CSRF_TRUSTED_ORIGINS = [
     'https://*.gitpod.io',
@@ -54,7 +46,6 @@ CSRF_TRUSTED_ORIGINS = [
     'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',
     'https://cheshire-captures-backend-084aac6d9023.herokuapp.com',
 ]
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -70,9 +61,9 @@ INSTALLED_APPS = [
     'cloudinary_storage',
     'cloudinary',
     'photographers',
-    'allauth', 
-    'allauth.account',  
-    'allauth.socialaccount',  
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
     'dj_rest_auth.registration',
     'drf_yasg',
     'photo',
@@ -82,51 +73,29 @@ INSTALLED_APPS = [
 
 SITE_ID = 1
 
-# Authentication Backends
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',  
+    'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
-# AllAuth Settings
-ACCOUNT_EMAIL_REQUIRED = True  
-ACCOUNT_AUTHENTICATION_METHOD = 'username'  
-ACCOUNT_EMAIL_VERIFICATION = 'none' 
-ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True 
-ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
-
-
-
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'dj_rest_auth.jwt_auth.JWTCookieAuthentication', 
+        (
+            'rest_framework.authentication.SessionAuthentication'
+            if 'DEV' in os.environ
+            else 'dj_rest_auth.jwt_auth.JWTCookieAuthentication'
+        )
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
 }
 
-
-
 REST_USE_JWT = True
 JWT_AUTH_SECURE = True
 JWT_AUTH_COOKIE = 'cheshire-captures-auth'
 JWT_AUTH_REFRESH_COOKIE = 'cheshire-captures-refresh'
 JWT_AUTH_SAMESITE = 'None'
-
-REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'dj_rest_auth.serializers.UserDetailsSerializer'
-}
-
-# Email Configuration
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER') 
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
-
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -137,13 +106,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'allauth.account.middleware.AccountMiddleware',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
-    'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',  
+    'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',
     'https://cheshire-captures-backend-084aac6d9023.herokuapp.com',
 ]
 
@@ -152,7 +120,6 @@ if 'CLIENT_ORIGIN_DEV' in os.environ:
     CORS_ALLOWED_ORIGIN_REGEXES = [
         rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
     ]
-
 
 ROOT_URLCONF = 'cheshire_captures_backend.urls'
 
@@ -174,53 +141,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cheshire_captures_backend.wsgi.application'
 
-# Database configuration
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-if 'DEV' in os.environ:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+DATABASES = {
+    'default': dj_database_url.parse(os.environ.get("DATABASE_URL")) if 'DEV' not in os.environ else {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-else:
-    DATABASES = {
-        'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
-    }
-
-
-# Password validation
-# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
-
-# Internationalization
-# https://docs.djangoproject.com/en/3.2/topics/i18n/
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
+}
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
