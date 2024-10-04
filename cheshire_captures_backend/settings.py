@@ -99,6 +99,7 @@ JWT_AUTH_REFRESH_COOKIE = 'cheshire-captures-refresh'
 JWT_AUTH_SAMESITE = 'None'
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
