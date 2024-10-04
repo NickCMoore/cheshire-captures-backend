@@ -1,5 +1,6 @@
 from django.db import models
 from photographers.models import Photographer
+from cloudinary.models import CloudinaryField
 
 
 class Tag(models.Model):
@@ -15,7 +16,7 @@ class Photo(models.Model):
     photographer = models.ForeignKey(Photographer, on_delete=models.CASCADE, related_name='photos')
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    image = models.ImageField(upload_to='photos/')
+    image = CloudinaryField('image')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     category = models.CharField(max_length=100, blank=True)
