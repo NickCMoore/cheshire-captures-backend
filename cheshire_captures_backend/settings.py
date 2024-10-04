@@ -43,6 +43,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.gitpod.io',
     'http://127.0.0.1:8000',
     'http://localhost:8000',
+    '8000-nickcmoore-cheshirecapt-1t388js0qvn.ws-eu116.gitpod.io',
     'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',
     'https://cheshire-captures-backend-084aac6d9023.herokuapp.com',
 ]
@@ -114,6 +115,7 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',
     'https://cheshire-captures-backend-084aac6d9023.herokuapp.com',
+    'https://3000-nickcmoore-cheshirecapt-hbw1s77xkey.ws-eu116.gitpod.io', 
 ]
 
 if 'CLIENT_ORIGIN_DEV' in os.environ:
@@ -121,6 +123,7 @@ if 'CLIENT_ORIGIN_DEV' in os.environ:
     CORS_ALLOWED_ORIGIN_REGEXES = [
         rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
     ]
+
 
 ROOT_URLCONF = 'cheshire_captures_backend.urls'
 
