@@ -3,6 +3,7 @@ import os
 import dj_database_url
 import re
 import logging
+from corsheaders.defaults import default_headers
 
 # Load environment variables from env.py if it exists
 if os.path.exists('env.py'):
@@ -116,6 +117,10 @@ CORS_ALLOWED_ORIGINS = [
     'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',
     'https://cheshire-captures-backend-084aac6d9023.herokuapp.com',
     'https://3000-nickcmoore-cheshirecapt-hbw1s77xkey.ws-eu116.gitpod.io', 
+]
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'cache-control',
 ]
 
 if 'CLIENT_ORIGIN_DEV' in os.environ:
