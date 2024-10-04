@@ -1,6 +1,8 @@
 from django.db import models
 from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.contrib.auth.models import User
+
 
 class Photographer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -12,7 +14,7 @@ class Photographer(models.Model):
     total_likes = models.PositiveIntegerField(default=0)
     profile_image = models.ImageField(
         upload_to='images/', 
-        default='../zjadqskisbjlyfb5jb8i'
+        default='path_to_default_image_here'
     )
     location = models.CharField(max_length=255, blank=True)
     cover_image = models.ImageField(
@@ -29,11 +31,12 @@ class Photographer(models.Model):
     def __str__(self):
         return f"{self.display_name} ({self.user.username})"
 
-    def create_photographer(sender, instance, created, **kwargs):
-        if created:
-            Photographer.objects.create(user=instance)
 
-    post_save.connect(create_photographer, sender=User)
+@receiver(post_save, sender=User)
+def create_photographer(sender, instance, created, **kwargs):
+    if created:
+        Photographer.objects.create(user=instance)
+
 
 class Follow(models.Model):
     follower = models.ForeignKey(Photographer, related_name='following', on_delete=models.CASCADE)
@@ -42,5 +45,6 @@ class Follow(models.Model):
 
     class Meta:
         unique_together = ('follower', 'following')
+
     def __str__(self):
         return f"{self.follower.user.username} follows {self.following.user.username}"

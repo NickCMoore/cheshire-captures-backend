@@ -21,20 +21,20 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('', root_route),
     path('admin/', admin.site.urls),
-    path('api-auth/', include('rest_framework.urls')),  
-    path('api/dj-rest-auth/', include('dj_rest_auth.urls')),  
-    path('api/dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')), 
+    path('api-auth/', include('rest_framework.urls')),  # DRF login/logout views
+    path('api/dj-rest-auth/', include('dj_rest_auth.urls')),  # Authentication endpoints
+    path('api/dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),  # Registration endpoints
     
-    # App-specific API routes
-    path('api/', include('photographers.urls')),
-    path('api/', include('photo.urls')),
-    path('api/', include('messaging.urls')),
+    # App-specific API routes under "api/"
+    path('api/photographers/', include('photographers.urls')),
+    path('api/photos/', include('photo.urls')),
+    path('api/messages/', include('messaging.urls')),
     
     # Swagger and Redoc API documentation
     re_path(r'^api/swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('api/swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('api/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
-    # Fallback route
+    # Fallback route to the root route view
     re_path(r'^.*$', root_route, name='root'), 
 ]
