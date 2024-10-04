@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-DEBUG = 'DEV' in os.environ
+DEBUG = False
 
 logger = logging.getLogger('django.security.DisallowedHost')
 logger.addHandler(logging.StreamHandler())
@@ -142,7 +142,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')], 
+        'DIRS': [BASE_DIR / 'cheshire_captures_backend/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -154,6 +154,8 @@ TEMPLATES = [
         },
     },
 ]
+
+
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
