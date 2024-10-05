@@ -1,3 +1,4 @@
+from rest_framework.views import APIView
 from rest_framework import viewsets, permissions, filters, generics
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
@@ -19,23 +20,13 @@ class PhotographerPagination(PageNumberPagination):
         page_size = super().get_page_size(request)
         return min(page_size, self.max_page_size) if page_size else self.page_size
 
-
 # ViewSet for Photographer model
-class PhotographerViewSet(viewsets.ModelViewSet):
-    queryset = Photographer.objects.select_related('user').prefetch_related('followers')
-    serializer_class = PhotographerSerializer
-    permission_classes = [IsOwnerOrReadOnly]
-    pagination_class = PhotographerPagination
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['location', 'display_name']
-    search_fields = ['display_name', 'bio', 'location']
-    ordering_fields = ['created_at', 'display_name']
-    ordering = ['-created_at']
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-
+class PhotographerList(APIView):
+    def get(self, request):
+        profiles = Photographer.objects.all()
+        serializer = PhotographerSerializer(profiles, many=True)
+        return Response(serializer.data)
+    
 # ViewSet for Follow model with custom unfollow action
 class FollowViewSet(viewsets.ModelViewSet):
     queryset = Follow.objects.all()
@@ -69,7 +60,6 @@ class FollowViewSet(viewsets.ModelViewSet):
             return Follow.objects.get(follower=follower, following=following)
         except Follow.DoesNotExist:
             return None
-
 
 # View for listing top photographers based on follower count
 class TopPhotographersView(generics.ListAPIView):
