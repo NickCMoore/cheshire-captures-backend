@@ -1,4 +1,3 @@
-from rest_framework.views import APIView
 from rest_framework import viewsets, permissions, filters, generics, status
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
@@ -21,43 +20,50 @@ class PhotographerPagination(PageNumberPagination):
         page_size = super().get_page_size(request)
         return min(page_size, self.max_page_size) if page_size else self.page_size
 
+
+# List view for photographers
 class PhotographerList(generics.ListAPIView):
-    def get(self, request):
-        profiles = Photographer.objects.all()
-        serializer = PhotographerSerializer(
-            profiles, many=True, context={'request': request}
-        )
-        return Response(serializer.data)
-    
+    queryset = Photographer.objects.annotate(total_followers=Count('followers'))
+    serializer_class = PhotographerSerializer
+    pagination_class = PhotographerPagination
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    ordering_fields = ['total_followers', 'created_at']
+
+    def get_queryset(self):
+        return Photographer.objects.annotate(
+            total_followers=Count('followers')
+        ).order_by('-total_followers') 
+
+
+# Detail view for a single photographer
 class PhotographerDetail(generics.RetrieveUpdateAPIView):
+    queryset = Photographer.objects.all()
     serializer_class = PhotographerSerializer
     permission_classes = [IsOwnerOrReadOnly]
 
-    def get_object(self, pk):
+    def get_object(self):
         try:
-            profile = Photographer.objects.get(pk=pk)
+            profile = Photographer.objects.get(pk=self.kwargs['pk'])
             self.check_object_permissions(self.request, profile)
             return profile
         except Photographer.DoesNotExist:
             raise Http404
-        
-    def get(self, request, pk):
-        profile = self.get_object(pk)
-        serializer = PhotographerSerializer(
-            profile, many=True, context={'request': request}
-        )
+
+    def get(self, request, *args, **kwargs):
+        profile = self.get_object()
+        serializer = self.serializer_class(profile, context={'request': request})
         return Response(serializer.data)
-    
-    def put(self, request, pk):
-        profile = self.get_object(pk)
-        serializer = PhotographerSerializer(
-            profile, data=request.data, context={'request': request}
-        )
+
+    def put(self, request, *args, **kwargs):
+        profile = self.get_object()
+        serializer = self.serializer_class(profile, data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
 # ViewSet for Follow model with custom unfollow action
 class FollowViewSet(viewsets.ModelViewSet):
     queryset = Follow.objects.all()
@@ -72,11 +78,11 @@ class FollowViewSet(viewsets.ModelViewSet):
         following = self.get_photographer_object(pk)
         if not following:
             return Response({'error': 'Photographer not found'}, status=404)
-        
+
         follow_instance = self.get_follow_instance(request.user.photographer, following)
         if not follow_instance:
             return Response({'error': 'Not following'}, status=400)
-        
+
         follow_instance.delete()
         return Response({'status': 'unfollowed'})
 
@@ -91,6 +97,7 @@ class FollowViewSet(viewsets.ModelViewSet):
             return Follow.objects.get(follower=follower, following=following)
         except Follow.DoesNotExist:
             return None
+
 
 # View for listing top photographers based on follower count
 class TopPhotographersView(generics.ListAPIView):
