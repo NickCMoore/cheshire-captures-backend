@@ -1,9 +1,10 @@
 from rest_framework.views import APIView
-from rest_framework import viewsets, permissions, filters, generics
+from rest_framework import viewsets, permissions, filters, generics, status
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from django.db.models import Count
+from django.http import Http404
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Photographer, Follow
 from .serializers import PhotographerSerializer, FollowSerializer
@@ -20,12 +21,33 @@ class PhotographerPagination(PageNumberPagination):
         page_size = super().get_page_size(request)
         return min(page_size, self.max_page_size) if page_size else self.page_size
 
-# ViewSet for Photographer model
 class PhotographerList(APIView):
     def get(self, request):
         profiles = Photographer.objects.all()
         serializer = PhotographerSerializer(profiles, many=True)
         return Response(serializer.data)
+    
+class PhotographerDetail(APIView):
+    serializer_class = PhotographerSerializer
+    def get_object(self, pk):
+        try:
+            profile = Photographer.objects.get(pk=pk)
+            return profile
+        except Photographer.DoesNotExist:
+            raise Http404
+        
+    def get(self, request, pk):
+        profile = self.get_object(pk)
+        serializer = PhotographerSerializer(profile)
+        return Response(serializer.data)
+    
+    def put(self, request, pk):
+        profile = self.get_object(pk)
+        serializer = PhotographerSerializer(profile, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 # ViewSet for Follow model with custom unfollow action
 class FollowViewSet(viewsets.ModelViewSet):
