@@ -20,9 +20,9 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('photographers.urls')),
-    path('api-auth/', include('rest_framework.urls')),  # DRF login/logout views
-    path('api/dj-rest-auth/', include('dj_rest_auth.urls')),  # Authentication endpoints
-    path('api/dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),  # Registration endpoints
+    path('api-auth/', include('rest_framework.urls')), 
+    path('api/dj-rest-auth/', include('dj_rest_auth.urls')), 
+    path('api/dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')), 
     
     # App-specific API routes under "api/"
     path('api/photos/', include('photo.urls')),

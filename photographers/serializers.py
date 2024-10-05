@@ -5,13 +5,19 @@ class PhotographerSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(format="%d %b %Y", read_only=True)
     updated_at = serializers.DateTimeField(format="%d %b %Y", read_only=True)
     user = serializers.ReadOnlyField(source='user.username')  
+    is_user = serializers.SerializerMethodField()
+
+    def get_is_user(self, obj):
+        request = self.context['request']
+        return request.user == obj.user
+
 
     class Meta:
         model = Photographer
         fields = [
             'id', 'user', 'display_name', 'bio', 'profile_image', 
             'location', 'cover_image', 'website', 'instagram', 
-            'twitter', 'created_at', 'updated_at'
+            'twitter', 'created_at', 'updated_at', 'is_user'
         ]
         read_only_fields = ['id', 'user', 'created_at', 'updated_at']
 

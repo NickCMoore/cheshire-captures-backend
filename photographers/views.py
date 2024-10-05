@@ -24,26 +24,35 @@ class PhotographerPagination(PageNumberPagination):
 class PhotographerList(APIView):
     def get(self, request):
         profiles = Photographer.objects.all()
-        serializer = PhotographerSerializer(profiles, many=True)
+        serializer = PhotographerSerializer(
+            profiles, many=True, context={'request': request}
+        )
         return Response(serializer.data)
     
 class PhotographerDetail(APIView):
     serializer_class = PhotographerSerializer
+    permission_classes = [IsOwnerOrReadOnly]
+
     def get_object(self, pk):
         try:
             profile = Photographer.objects.get(pk=pk)
+            self.check_object_permissions(self.request, profile)
             return profile
         except Photographer.DoesNotExist:
             raise Http404
         
     def get(self, request, pk):
         profile = self.get_object(pk)
-        serializer = PhotographerSerializer(profile)
+        serializer = PhotographerSerializer(
+            profile, many=True, context={'request': request}
+        )
         return Response(serializer.data)
     
     def put(self, request, pk):
         profile = self.get_object(pk)
-        serializer = PhotographerSerializer(profile, data=request.data)
+        serializer = PhotographerSerializer(
+            profile, data=request.data, context={'request': request}
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
