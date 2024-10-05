@@ -11,7 +11,7 @@ if os.path.exists('env.py'):
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Secret and Security Settings
-SECRET_KEY = os.environ.get('SECRET_KEY', '')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = 'DEV' in os.environ
 
 ALLOWED_HOSTS = [
@@ -123,9 +123,7 @@ else:
         r"^https://.*\.gitpod\.io$", 
     ]
 
-
 CORS_ALLOW_CREDENTIALS = True
-
 
 # URL Configuration
 ROOT_URLCONF = 'cheshire_captures_backend.urls'
@@ -143,7 +141,6 @@ else:
     DATABASES = {
         'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
     }
-    print('connected')
 
 # Static and Media Files
 STATIC_URL = '/static/'
