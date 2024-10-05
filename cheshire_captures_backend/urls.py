@@ -21,8 +21,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('photographers.urls')),
     path('api-auth/', include('rest_framework.urls')), 
-    path('api/dj-rest-auth/', include('dj_rest_auth.urls')), 
-    path('api/dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')), 
+    path('dj-rest-auth/', include('dj_rest_auth.urls')), 
+    path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')), 
     
     # App-specific API routes under "api/"
     path('api/photos/', include('photo.urls')),
