@@ -14,12 +14,12 @@ class Photographer(models.Model):
     total_likes = models.PositiveIntegerField(default=0)
     profile_image = models.ImageField(
         upload_to='images/', 
-        default='path_to_default_image_here'
+        default='../24633_a5n9zu'
     )
     location = models.CharField(max_length=255, blank=True)
     cover_image = models.ImageField(
         upload_to='cover_images/', 
-        default='default_images/cover_placeholder.jpg'
+        default='../24633_a5n9zu'
     )
     website = models.URLField(max_length=255, blank=True)
     instagram = models.URLField(max_length=255, blank=True)
@@ -31,11 +31,11 @@ class Photographer(models.Model):
     def __str__(self):
         return f"{self.display_name} ({self.user.username})"
 
-
-@receiver(post_save, sender=User)
 def create_photographer(sender, instance, created, **kwargs):
     if created:
         Photographer.objects.create(user=instance)
+
+post_save.connect(create_photographer, sender=User)
 
 
 class Follow(models.Model):
