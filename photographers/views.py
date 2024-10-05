@@ -21,7 +21,7 @@ class PhotographerPagination(PageNumberPagination):
         page_size = super().get_page_size(request)
         return min(page_size, self.max_page_size) if page_size else self.page_size
 
-class PhotographerList(APIView):
+class PhotographerList(generics.ListAPIView):
     def get(self, request):
         profiles = Photographer.objects.all()
         serializer = PhotographerSerializer(
@@ -29,7 +29,7 @@ class PhotographerList(APIView):
         )
         return Response(serializer.data)
     
-class PhotographerDetail(APIView):
+class PhotographerDetail(generics.RetrieveUpdateAPIView):
     serializer_class = PhotographerSerializer
     permission_classes = [IsOwnerOrReadOnly]
 

@@ -3,6 +3,7 @@ from django.urls import path, include, re_path
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from .views import root_route
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -18,13 +19,13 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
+    path('', root_route),
     path('admin/', admin.site.urls),
-    path('', include('photographers.urls')),
     path('api-auth/', include('rest_framework.urls')), 
     path('dj-rest-auth/', include('dj_rest_auth.urls')), 
     path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')), 
     
-    # App-specific API routes under "api/"
+    # App-specific API routes
     path('api/photos/', include('photo.urls')),
     path('api/messages/', include('messaging.urls')),
     
