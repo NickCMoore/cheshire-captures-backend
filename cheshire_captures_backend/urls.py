@@ -26,6 +26,7 @@ urlpatterns = [
     path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')), 
     
     # App-specific API routes
+    path('', include('photographers.urls')),
     path('api/photos/', include('photo.urls')),
     path('api/messages/', include('messaging.urls')),
     
