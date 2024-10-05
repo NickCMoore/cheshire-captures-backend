@@ -3,7 +3,7 @@ from django.urls import path, include, re_path
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-from .views import root_route
+from .views import root_route, logout_route
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -22,6 +22,7 @@ urlpatterns = [
     path('', root_route),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')), 
+    path('dj-rest-auth/logout/', logout_route),
     path('dj-rest-auth/', include('dj_rest_auth.urls')), 
     path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')), 
     
