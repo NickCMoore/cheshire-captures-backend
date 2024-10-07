@@ -3,6 +3,7 @@ from django.urls import path, include, re_path
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from rest_framework_simplejwt.views import TokenRefreshView  # Correct import here
 from .views import root_route, logout_route
 
 schema_view = get_schema_view(
@@ -25,6 +26,7 @@ urlpatterns = [
     path('dj-rest-auth/logout/', logout_route),
     path('dj-rest-auth/', include('dj_rest_auth.urls')), 
     path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')), 
+    path('dj-rest-auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), 
     
     # App-specific API routes
     path('api/photographers/', include('photographers.urls')),
@@ -35,5 +37,4 @@ urlpatterns = [
     re_path(r'^api/swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('api/swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('api/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-
 ]
