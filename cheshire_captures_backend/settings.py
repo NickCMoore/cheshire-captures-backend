@@ -21,6 +21,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '*.gitpod.io',
     'https://cheshire-captures-backend-084aac6d9023.herokuapp.com',
+    '8000-nickcmoore-cheshirecapt-9zo58vdqbuc.ws-eu116.gitpod.io',
 ]
 
 if 'GITPOD_WORKSPACE_URL' in os.environ:
