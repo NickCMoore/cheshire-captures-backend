@@ -8,34 +8,32 @@ import logging
 if os.path.exists('env.py'):
     import env
 
+# Base directory path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Secret and Security Settings
+# Secret key and Debug mode
 SECRET_KEY = os.environ.get('SECRET_KEY', '')
 DEBUG = 'DEV' in os.environ
 
-# ALLOWED_HOSTS Configuration
+# Automatically add Gitpod URLs to ALLOWED_HOSTS
 ALLOWED_HOSTS = [
-    os.environ.get('ALLOWED_HOST'),
     '127.0.0.1',
     'localhost',
     '*.gitpod.io',
     'https://cheshire-captures-backend-084aac6d9023.herokuapp.com',
 ]
 
-# Dynamically allow Gitpod URLs using regex
 if 'GITPOD_WORKSPACE_URL' in os.environ:
-    gitpod_workspace_url = os.environ['GITPOD_WORKSPACE_URL']
-    match = re.match(r"https://(.+)", gitpod_workspace_url)
-    if match:
-        ALLOWED_HOSTS.append(match.group(1))
+    gitpod_url = os.environ['GITPOD_WORKSPACE_URL']
+    host = re.sub(r'^https://', '', gitpod_url)
+    ALLOWED_HOSTS.append(host)
 
-# Logging configuration for DisallowedHost errors
+# Logging for DisallowedHost errors
 logger = logging.getLogger('django.security.DisallowedHost')
 logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.WARNING)
 
-# Cloudinary Configuration
+# Cloudinary Configuration for media storage
 CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL', '')
 if CLOUDINARY_URL:
     CLOUDINARY_STORAGE = {'CLOUDINARY_URL': CLOUDINARY_URL}
@@ -45,7 +43,7 @@ else:
 
 MEDIA_URL = '/media/'
 
-# Application Definitions
+# Installed apps
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -70,7 +68,7 @@ INSTALLED_APPS = [
     'corsheaders',
 ]
 
-# Internationalization
+# Language and timezone settings
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
@@ -95,6 +93,7 @@ REST_FRAMEWORK = {
     'DATETIME_FORMAT': '%d %b %Y',
 }
 
+# JSON-only rendering in production
 if 'DEV' not in os.environ:
     REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = [
         'rest_framework.renderers.JSONRenderer',
@@ -106,11 +105,12 @@ JWT_AUTH_COOKIE = 'cheshire-captures-auth'
 JWT_AUTH_REFRESH_COOKIE = 'cheshire-captures-refresh'
 JWT_AUTH_SAMESITE = 'None'
 
+# Custom user serializer for dj-rest-auth
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'cheshire_captures_backend.serializers.CurrentUserSerializer'
 }
 
-# Middleware Definitions
+# Middleware settings
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -126,12 +126,12 @@ MIDDLEWARE = [
 # CORS Configuration
 CORS_ALLOW_CREDENTIALS = True
 
-# Allow all Gitpod subdomains dynamically
+# Regex to allow all Gitpod subdomains dynamically
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^https://\d{4,5}-\w+-\w+-\w+-\w+\.ws-eu\d+\.gitpod\.io$",
 ]
 
-# Allow production domain for CORS
+# Production CORS origin
 CORS_ALLOWED_ORIGINS = [
     'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',
 ]
@@ -140,7 +140,7 @@ CORS_ALLOWED_ORIGINS = [
 ROOT_URLCONF = 'cheshire_captures_backend.urls'
 WSGI_APPLICATION = 'cheshire_captures_backend.wsgi.application'
 
-# Database Configuration
+# Database configuration
 if 'DEV' in os.environ:
     DATABASES = {
         'default': {
@@ -162,11 +162,11 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Static and Media Files
+# Static and media files configuration
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Templates Configuration
+# Templates settings
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
