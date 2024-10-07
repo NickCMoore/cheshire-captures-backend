@@ -21,14 +21,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security settings
 SECRET_KEY = os.environ.get('SECRET_KEY')
-DEBUG = 'DEV' in os.environ 
+DEBUG = 'DEV' in os.environ
 
 ALLOWED_HOSTS = [
     os.environ.get('CLIENT_ORIGIN_DEV', ''),
     'cheshire-captures-backend-084aac6d9023.herokuapp.com',
     '127.0.0.1',
     '8000-nickcmoore-cheshirecapt-1t388js0qvn.ws-eu116.gitpod.io'
-    
 ]
 
 # Application definition
@@ -62,8 +61,7 @@ SITE_ID = 1
 # REST framework settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication'
-        if 'DEV' in os.environ else 'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
@@ -77,22 +75,21 @@ if 'DEV' not in os.environ:
     ]
 
 # JWT settings
-REST_USE_JWT = True
-JWT_AUTH_SECURE = True
-JWT_AUTH_COOKIE = 'my-app-auth'
-JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
-JWT_AUTH_SAMESITE = 'None'
-
-# JWT settings
-REST_USE_JWT = True  
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),  
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
     'AUTH_HEADER_TYPES': ('Bearer',),
-    'SIGNING_KEY': os.environ.get('SECRET_KEY'),
+    'SIGNING_KEY': SECRET_KEY,
 }
+
+# JWT cookie settings
+REST_USE_JWT = True
+JWT_AUTH_SECURE = True
+JWT_AUTH_COOKIE = 'my-app-auth'
+JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
+JWT_AUTH_SAMESITE = 'None'
 
 # Custom serializers for dj_rest_auth
 REST_AUTH_SERIALIZERS = {
