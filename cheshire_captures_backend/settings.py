@@ -135,6 +135,8 @@ if 'CLIENT_ORIGIN_DEV' in os.environ:
         rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
     ]
 
+CORS_ALLOW_CREDENTIALS = True
+
 # URL Configuration
 ROOT_URLCONF = 'cheshire_captures_backend.urls'
 WSGI_APPLICATION = 'cheshire_captures_backend.wsgi.application'
