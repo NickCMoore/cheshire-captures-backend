@@ -14,14 +14,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', '')
 DEBUG = 'DEV' in os.environ
 
+# ALLOWED_HOSTS Configuration
 ALLOWED_HOSTS = [
     os.environ.get('ALLOWED_HOST'),
     '127.0.0.1',
     'localhost',
     '*.gitpod.io',
-    'https://cheshire-captures-backend-084aac6d9023.herokuapp.com/',
-    '8000-nickcmoore-cheshirecapt-9zo58vdqbuc.ws-eu116.gitpod.io',
+    'https://cheshire-captures-backend-084aac6d9023.herokuapp.com',
 ]
+
+# Dynamically allow Gitpod URLs using regex
+if 'GITPOD_WORKSPACE_URL' in os.environ:
+    gitpod_workspace_url = os.environ['GITPOD_WORKSPACE_URL']
+    match = re.match(r"https://(.+)", gitpod_workspace_url)
+    if match:
+        ALLOWED_HOSTS.append(match.group(1))
 
 # Logging configuration for DisallowedHost errors
 logger = logging.getLogger('django.security.DisallowedHost')
@@ -117,16 +124,17 @@ MIDDLEWARE = [
 ]
 
 # CORS Configuration
-if 'CLIENT_ORIGIN_DEV' in os.environ:
-    extracted_url = re.match(r'^.+-', os.environ.get('CLIENT_ORIGIN_DEV', ''), re.IGNORECASE).group(0)
-    CORS_ALLOWED_ORIGIN_REGEXES = [
-        rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
-    ]
+CORS_ALLOW_CREDENTIALS = True
 
+# Allow all Gitpod subdomains dynamically
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://\d{4,5}-\w+-\w+-\w+-\w+\.ws-eu\d+\.gitpod\.io$",
+]
+
+# Allow production domain for CORS
 CORS_ALLOWED_ORIGINS = [
     'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',
 ]
-CORS_ALLOW_CREDENTIALS = True
 
 # URL Configuration
 ROOT_URLCONF = 'cheshire_captures_backend.urls'
