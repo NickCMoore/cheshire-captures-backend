@@ -17,12 +17,13 @@ DEBUG = 'DEV' in os.environ
 
 # Automatically add Gitpod URLs to ALLOWED_HOSTS
 ALLOWED_HOSTS = [
-    '127.0.0.1',
+    'cheshire-captures-backend-084aac6d9023.herokuapp.com',
     'localhost',
+    '127.0.0.1',
     '*.gitpod.io',
-    'https://cheshire-captures-backend-084aac6d9023.herokuapp.com',
     '8000-nickcmoore-cheshirecapt-9zo58vdqbuc.ws-eu116.gitpod.io',
 ]
+
 
 if 'GITPOD_WORKSPACE_URL' in os.environ:
     gitpod_url = os.environ['GITPOD_WORKSPACE_URL']
