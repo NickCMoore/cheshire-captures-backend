@@ -19,7 +19,8 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
     '*.gitpod.io',
-    'cheshire-captures-4a500dc7ab0a.herokuapp.com',
+    'https://cheshire-captures-backend-084aac6d9023.herokuapp.com/'
+    '8000-nickcmoore-cheshirecapt-9zo58vdqbuc.ws-eu116.gitpod.io',
 ]
 
 # Logging configuration for DisallowedHost errors
@@ -125,15 +126,10 @@ if 'CLIENT_ORIGIN' in os.environ:
     CORS_ALLOWED_ORIGINS = [
         os.environ.get('CLIENT_ORIGIN')
     ]
-
-if 'CLIENT_ORIGIN_DEV' in os.environ:
-    extracted_url = re.match(
-        r'^.+-', os.environ.get('CLIENT_ORIGIN_DEV', ''), re.IGNORECASE
-    ).group(0)
+else:
     CORS_ALLOWED_ORIGIN_REGEXES = [
-        rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
+        r"^https://.*\.gitpod\.io$",
     ]
-
 
 CORS_ALLOW_CREDENTIALS = True
 
