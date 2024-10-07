@@ -38,7 +38,12 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'DEV' in os.environ
 
-ALLOWED_HOSTS = ['cheshire-captures-backend-084aac6d9023.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = [
+    'cheshire-captures-backend-084aac6d9023.herokuapp.com',
+    '127.0.0.1',
+    '8000-nickcmoore-cheshirecapt-1t388js0qvn.ws-eu116.gitpod.io'
+]
+
 
 # Application definition
 
@@ -60,6 +65,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'dj_rest_auth.registration',
+    'drf_yasg',
     'corsheaders',
     'messaging',
     'photo',
@@ -91,6 +97,25 @@ JWT_AUTH_COOKIE = 'my-app-auth'
 JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
 JWT_AUTH_SAMESITE = 'None'
 
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_COOKIE': 'my-app-auth',  
+    'AUTH_COOKIE_SAMESITE': 'None',  
+    'AUTH_COOKIE_SECURE': True,  
+    'AUTH_COOKIE_HTTPONLY': True,  
+    'REFRESH_COOKIE': 'my-refresh-token',  
+    'REFRESH_COOKIE_SAMESITE': 'None',
+    'REFRESH_COOKIE_SECURE': True,
+    'REFRESH_COOKIE_HTTPONLY': True,
+}
+
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -114,6 +139,16 @@ if 'CLIENT_ORIGIN_DEV' in os.environ:
     ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = [
+    "https://cheshire-captures-4a500dc7ab0a.herokuapp.com", 
+    "https://3000-nickcmoore-cheshirecapt-hbw1s77xkey.ws-eu116.gitpod.io",  
+]
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://.*\.gitpod\.io$", 
+]
+
 
 ROOT_URLCONF = 'cheshire_captures_backend.urls'
 
