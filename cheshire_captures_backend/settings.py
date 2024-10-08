@@ -86,8 +86,8 @@ SIMPLE_JWT = {
 
 # JWT cookie settings
 REST_AUTH = {
-    "USER_DETAILS_SERIALIZER": "drf_api.serializers.CurrentUserSerializer",
-    "TOKEN_SERIALIZER": "drf_api.serializers.CustomTokenSerializer",
+    "USER_DETAILS_SERIALIZER": "cheshire_captures_backend.serializers.CurrentUserSerializer",
+    "TOKEN_SERIALIZER": "cheshire_captures_backend.serializers.CustomTokenSerializer",
     "USE_JWT": True,
     "JWT_AUTH_SECURE": True,
     "JWT_AUTH_COOKIE": "my-app-auth",
