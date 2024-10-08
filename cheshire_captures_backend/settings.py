@@ -85,15 +85,14 @@ SIMPLE_JWT = {
 }
 
 # JWT cookie settings
-REST_USE_JWT = True
-JWT_AUTH_SECURE = True
-JWT_AUTH_COOKIE = 'my-app-auth'
-JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
-JWT_AUTH_SAMESITE = 'None'
-
-# Custom serializers for dj_rest_auth
-REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'cheshire_captures_backend.serializers.CurrentUserSerializer'
+REST_AUTH = {
+    "USER_DETAILS_SERIALIZER": "drf_api.serializers.CurrentUserSerializer",
+    "TOKEN_SERIALIZER": "drf_api.serializers.CustomTokenSerializer",
+    "USE_JWT": True,
+    "JWT_AUTH_SECURE": True,
+    "JWT_AUTH_COOKIE": "my-app-auth",
+    "JWT_AUTH_REFRESH_COOKIE": "my-refresh-token",
+    "JWT_AUTH_SAMESITE": "None",
 }
 
 # Middleware configuration
