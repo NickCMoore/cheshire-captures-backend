@@ -9,7 +9,6 @@ from .models import Photographer, Follow
 from .serializers import PhotographerSerializer, FollowSerializer
 from .permissions import IsOwnerOrReadOnly
 
-
 # Custom pagination class for photographers
 class PhotographerPagination(PageNumberPagination):
     page_size = 10
@@ -19,7 +18,6 @@ class PhotographerPagination(PageNumberPagination):
     def get_page_size(self, request):
         page_size = super().get_page_size(request)
         return min(page_size, self.max_page_size) if page_size else self.page_size
-
 
 # List view for photographers
 class PhotographerList(generics.ListAPIView):
@@ -33,8 +31,7 @@ class PhotographerList(generics.ListAPIView):
     def get_queryset(self):
         return Photographer.objects.annotate(
             total_followers=Count('followers')
-        ).order_by('-total_followers') 
-
+        ).order_by('-total_followers')
 
 # Detail view for a single photographer
 class PhotographerDetail(generics.RetrieveUpdateAPIView):
@@ -42,9 +39,10 @@ class PhotographerDetail(generics.RetrieveUpdateAPIView):
     serializer_class = PhotographerSerializer
     permission_classes = [IsOwnerOrReadOnly]
 
+    # Fetch by username instead of pk if required
     def get_object(self):
         try:
-            profile = Photographer.objects.get(pk=self.kwargs['pk'])
+            profile = Photographer.objects.get(user__username=self.kwargs['username'])  # Fetch by username
             self.check_object_permissions(self.request, profile)
             return profile
         except Photographer.DoesNotExist:
@@ -62,7 +60,6 @@ class PhotographerDetail(generics.RetrieveUpdateAPIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 # ViewSet for Follow model with custom unfollow action
 class FollowViewSet(viewsets.ModelViewSet):
@@ -97,7 +94,6 @@ class FollowViewSet(viewsets.ModelViewSet):
             return Follow.objects.get(follower=follower, following=following)
         except Follow.DoesNotExist:
             return None
-
 
 # View for listing top photographers based on follower count
 class TopPhotographersView(generics.ListAPIView):

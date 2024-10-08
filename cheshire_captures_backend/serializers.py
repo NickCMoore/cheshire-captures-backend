@@ -2,14 +2,13 @@ from dj_rest_auth.serializers import UserDetailsSerializer, TokenSerializer
 from rest_framework import serializers
 
 class CurrentUserSerializer(UserDetailsSerializer):
-    profile_id = serializers.ReadOnlyField(source='profile.id')
-    profile_image = serializers.ReadOnlyField(source='profile.image.url')
+    photographer_id = serializers.ReadOnlyField(source='photographer.id')
+    profile_image = serializers.ReadOnlyField(source='photographer.profile_image.url')
 
     class Meta(UserDetailsSerializer.Meta):
         fields = UserDetailsSerializer.Meta.fields + (
-            'profile_id', 'profile_image'
+            'photographer_id', 'profile_image'
         )
-
 
 class CustomTokenSerializer(TokenSerializer):
     user = CurrentUserSerializer(many=False, read_only=True)
