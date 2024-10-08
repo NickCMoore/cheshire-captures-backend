@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security settings
 SECRET_KEY = os.environ.get('SECRET_KEY')
-DEBUG = 'DEV' in os.environ
+DEBUG = True
 
 ALLOWED_HOSTS = [
     os.environ.get('CLIENT_ORIGIN_DEV', ''),
