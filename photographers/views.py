@@ -39,15 +39,6 @@ class PhotographerDetail(generics.RetrieveUpdateAPIView):
     serializer_class = PhotographerSerializer
     permission_classes = [IsOwnerOrReadOnly]
 
-    # Fetch by username instead of pk if required
-    def get_object(self):
-        try:
-            profile = Photographer.objects.get(user__username=self.kwargs['username'])  # Fetch by username
-            self.check_object_permissions(self.request, profile)
-            return profile
-        except Photographer.DoesNotExist:
-            raise Http404
-
     def get(self, request, *args, **kwargs):
         profile = self.get_object()
         serializer = self.serializer_class(profile, context={'request': request})
