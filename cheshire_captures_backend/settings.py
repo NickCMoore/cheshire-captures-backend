@@ -119,6 +119,13 @@ if 'CLIENT_ORIGIN_DEV' in os.environ:
         rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
     ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://8000-nickcmoore-cheshirecapt-1t388js0qvn.ws-eu116.gitpod.io',
+    # Add any other URLs that need to be trusted
+]
+
+
+
 # URL configuration
 ROOT_URLCONF = 'cheshire_captures_backend.urls'
 
