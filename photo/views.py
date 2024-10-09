@@ -119,13 +119,22 @@ class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    pagination_class = StandardResultsSetPagination
-    filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
-    search_fields = ['content', 'photographer__display_name']
-    filterset_fields = ['photo']
-    ordering_fields = ['created_at']
-    ordering = ['-created_at']
 
-    def perform_create(self, serializer):
-        serializer.save(photographer=self.request.user.photographer)
+    def get_queryset(self):
+        photo_id = self.kwargs.get('photo_id')
+        if photo_id:
+            return self.queryset.filter(photo_id=photo_id)
+        return self.queryset
 
+    def create(self, request, *args, **kwargs):
+        photo_id = kwargs.get('photo_id')
+        if not photo_id:
+            return Response({'detail': 'Photo ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            photo = Photo.objects.get(id=photo_id)
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(photo=photo, photographer=request.user.photographer)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Photo.DoesNotExist:
+            return Response({'detail': 'Photo not found'}, status=status.HTTP_404_NOT_FOUND)
