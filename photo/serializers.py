@@ -2,14 +2,12 @@ from rest_framework import serializers
 from .models import Photo, Tag, Like, Comment
 
 class PhotoSerializer(serializers.ModelSerializer):
-    photographer_display_name = serializers.SerializerMethodField()
-    image_url = serializers.SerializerMethodField()
-
-    def get_photographer_display_name(self, obj):
-        return obj.photographer.display_name or obj.photographer.user.username
-
-    def get_image_url(self, obj):
-        return obj.image.url if obj.image else None
+    photographer_display_name = serializers.CharField(
+        source='photographer.display_name', read_only=True
+    )
+    image_url = serializers.CharField(
+        source='image.url', read_only=True
+    )
 
     class Meta:
         model = Photo
