@@ -39,6 +39,25 @@ class PhotographerDetail(generics.RetrieveUpdateAPIView):
     serializer_class = PhotographerSerializer
     permission_classes = [IsOwnerOrReadOnly]
 
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def follow(self, request, pk=None):
+        photographer = self.get_object()
+        follower = request.user.photographer
+        if Follow.objects.filter(follower=follower, following=photographer).exists():
+            return Response({'detail': 'You are already following this photographer.'}, status=status.HTTP_400_BAD_REQUEST)
+        Follow.objects.create(follower=follower, following=photographer)
+        return Response({'status': 'followed'}, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def unfollow(self, request, pk=None):
+        photographer = self.get_object()
+        follower = request.user.photographer
+        follow_instance = Follow.objects.filter(follower=follower, following=photographer).first()
+        if not follow_instance:
+            return Response({'detail': 'You are not following this photographer.'}, status=status.HTTP_400_BAD_REQUEST)
+        follow_instance.delete()
+        return Response({'status': 'unfollowed'}, status=status.HTTP_204_NO_CONTENT)
+
     def get(self, request, *args, **kwargs):
         profile = self.get_object()
         serializer = self.serializer_class(profile, context={'request': request})
