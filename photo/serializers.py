@@ -1,6 +1,11 @@
 from rest_framework import serializers
 from .models import Photo, Tag, Like, Comment
 
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = '__all__'
+
 class PhotoSerializer(serializers.ModelSerializer):
     photographer_display_name = serializers.CharField(
         source='photographer.display_name', read_only=True
@@ -8,6 +13,7 @@ class PhotoSerializer(serializers.ModelSerializer):
     image_url = serializers.CharField(
         source='image.url', read_only=True
     )
+    tags = TagSerializer(many=True, read_only=True) 
 
     class Meta:
         model = Photo
@@ -17,13 +23,6 @@ class PhotoSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['photographer', 'created_at', 'updated_at']
 
-
-class TagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tag
-        fields = '__all__'
-
-
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
@@ -32,7 +31,9 @@ class LikeSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     photographer = serializers.ReadOnlyField(source='photographer.user.username')
+    photo_title = serializers.ReadOnlyField(source='photo.title')
 
     class Meta:
         model = Comment
-        fields = ['id', 'photographer', 'photo', 'content', 'created_at', 'updated_at']
+        fields = ['id', 'photographer', 'photo', 'photo_title', 'content', 'created_at', 'updated_at']
+
