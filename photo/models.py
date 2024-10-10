@@ -57,3 +57,16 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.photographer.user.username} on {self.photo.title}"
+
+class PhotoRating(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='ratings')
+    photo = models.ForeignKey(Photo, on_delete=models.CASCADE, related_name='ratings')
+    rating = models.PositiveSmallIntegerField()  
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('user', 'photo')  
+
+    def __str__(self):
+        return f"{self.user.username} rated {self.photo.title} with {self.rating} stars"

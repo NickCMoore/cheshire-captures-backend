@@ -1,7 +1,7 @@
 from rest_framework import viewsets, permissions, filters, status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import Photo, Tag, Like, Comment
+from .models import Photo, Tag, Like, Comment, PhotoRating
 from .serializers import PhotoSerializer, TagSerializer, LikeSerializer, CommentSerializer
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -10,6 +10,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework.parsers import MultiPartParser, FormParser
+from photographers.models import Photographer
 
 # Custom pagination class to control the number of items per page
 class StandardResultsSetPagination(PageNumberPagination):
@@ -62,21 +63,39 @@ class PhotoViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(photos, many=True)
         return Response(serializer.data)
 
+
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated], url_path='rate')
     def rate_photo(self, request, pk=None):
         photo = self.get_object()
-        rating = request.data.get('rating')
-        if rating is not None:
+        rating_value = request.data.get('rating')
+        user = request.user
+
+        if rating_value is not None:
             try:
-                rating = float(rating)
-                if 0 <= rating <= 5: 
-                    total_rating = (photo.rating * photo.rating_count) + rating
-                    photo.rating_count += 1
+                rating_value = int(rating_value)
+                if 1 <= rating_value <= 5:
+    
+                    user_rating, created = PhotoRating.objects.get_or_create(user=user, photo=photo)
+                    
+              
+                    if not created:
+                        old_rating = user_rating.rating
+                        user_rating.rating = rating_value
+                        user_rating.save()
+
+              
+                        total_rating = (photo.rating * photo.rating_count) - old_rating + rating_value
+                    else:
+                        total_rating = (photo.rating * photo.rating_count) + rating_value
+                        photo.rating_count += 1
+
+              
                     photo.rating = total_rating / photo.rating_count
                     photo.save()
-                    return Response({'detail': 'Rating added successfully!'}, status=status.HTTP_200_OK)
+
+                    return Response({'detail': 'Rating added or updated successfully!'}, status=status.HTTP_200_OK)
                 else:
-                    return Response({'detail': 'Rating should be between 0 and 5.'}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'detail': 'Rating should be between 1 and 5.'}, status=status.HTTP_400_BAD_REQUEST)
             except ValueError:
                 return Response({'detail': 'Invalid rating value.'}, status=status.HTTP_400_BAD_REQUEST)
         return Response({'detail': 'Rating not provided.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -92,6 +111,16 @@ class PhotoViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(top_photos, many=True)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['get'], permission_classes=[permissions.IsAuthenticatedOrReadOnly], url_path='ratings')
+    def photo_ratings(self, request, pk=None):
+        """
+        Retrieves all ratings for a specific photo.
+        """
+        photo = self.get_object()
+        ratings = PhotoRating.objects.filter(photo=photo)
+        serializer = PhotoRatingSerializer(ratings, many=True)
         return Response(serializer.data)
 
     def perform_create(self, serializer):
