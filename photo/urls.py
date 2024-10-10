@@ -14,5 +14,6 @@ urlpatterns = [
     path('photos/<int:pk>/unlike/', LikeViewSet.as_view({'post': 'unlike'}), name='photo-unlike'),
     path('photos/<int:pk>/rate/', PhotoViewSet.as_view({'post': 'rate_photo'}), name='photo-rate'), 
     path('photos/top-rated/', PhotoViewSet.as_view({'get': 'top_rated'}), name='photo-top-rated'),
+    path('photos/my_photos/', PhotoViewSet.as_view({'get': 'my_photos'}), name='my-photos'),
     path('photos/<int:pk>/comments/', CommentViewSet.as_view({'post': 'add_comment'}), name='photo-add-comment'),
 ]
