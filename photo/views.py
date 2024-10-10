@@ -42,6 +42,12 @@ class PhotoViewSet(viewsets.ModelViewSet):
 
         return queryset
 
+    def destroy(self, request, *args, **kwargs):
+        photo = self.get_object()
+        if photo.photographer.user != request.user:
+            return Response({'error': 'You do not have permission to delete this photo.'}, status=403)
+        return super().destroy(request, *args, **kwargs)
+
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def my_photos(self, request):
         """
