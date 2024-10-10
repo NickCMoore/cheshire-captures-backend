@@ -27,6 +27,7 @@ class PhotographerList(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     ordering_fields = ['total_followers', 'created_at']
+    search_fields = ['display_name', 'bio', 'user__username'] 
 
     def get_queryset(self):
         return Photographer.objects.annotate(
