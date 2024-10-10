@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from photographers.models import Photographer
 from cloudinary.models import CloudinaryField
 
@@ -13,7 +14,9 @@ class Tag(models.Model):
         return self.name
 
 class Photo(models.Model):
-    photographer = models.ForeignKey(Photographer, on_delete=models.CASCADE, related_name='photos')
+    photographer = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='photos'
+    )
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     image = CloudinaryField('image')
