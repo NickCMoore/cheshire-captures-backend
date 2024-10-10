@@ -59,48 +59,28 @@ INSTALLED_APPS = [
 
 SITE_ID = 1
 
-# REST framework settings
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
+    'DEFAULT_AUTHENTICATION_CLASSES': [(
         'rest_framework.authentication.SessionAuthentication'
-        if os.environ.get('DEV') == 'True'
-        else 'rest_framework_simplejwt.authentication.JWTAuthentication'
-    ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+        if 'DEV' in os.environ
+        else 'dj_rest_auth.jwt_auth.JWTCookieAuthentication'
+    )],
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
     'DATETIME_FORMAT': '%d %b %Y',
-    'DEFAULT_RENDERER_CLASSES': [
+
+}
+if 'DEV' not in os.environ:
+    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = [
         'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer'
-        if os.environ.get('DEV') == 'True'
-        else 'rest_framework.renderers.JSONRenderer'
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly'
-    ],
-}
+    ]
 
-
-# JWT settings
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),  
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,
-    'AUTH_HEADER_TYPES': ('Bearer',),
-    'SIGNING_KEY': SECRET_KEY,
-}
-
-# JWT cookie settings
-REST_AUTH = {
-    "USER_DETAILS_SERIALIZER": "cheshire_captures_backend.serializers.CurrentUserSerializer",
-    "TOKEN_SERIALIZER": "cheshire_captures_backend.serializers.CustomTokenSerializer",
-    "USE_JWT": True,
-    "JWT_AUTH_SECURE": True,
-    "JWT_AUTH_COOKIE": "my-app-auth",
-    "JWT_AUTH_REFRESH_COOKIE": "my-refresh-token",
-    "JWT_AUTH_SAMESITE": "None",
-}
+REST_USE_JWT = True
+JWT_AUTH_SECURE = True
+JWT_AUTH_COOKIE = 'my-app-auth'
+JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
+JWT_AUTH_SAMESITE = 'None'
 
 # Middleware configuration
 MIDDLEWARE = [
