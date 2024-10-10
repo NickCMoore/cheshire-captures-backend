@@ -1,5 +1,6 @@
 from rest_framework import viewsets, permissions, filters, generics, status
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from django.db.models import Count
@@ -116,3 +117,16 @@ class TopPhotographersView(generics.ListAPIView):
         return Photographer.objects.annotate(
             follower_count=Count('followers')
         ).order_by('-follower_count')
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def follow_photographer(request, pk):
+    try:
+        photographer = Photographer.objects.get(pk=pk)
+        follower = request.user.photographer
+        if Follow.objects.filter(follower=follower, following=photographer).exists():
+            return Response({'detail': 'You are already following this photographer.'}, status=status.HTTP_400_BAD_REQUEST)
+        Follow.objects.create(follower=follower, following=photographer)
+        return Response({'status': 'followed'}, status=status.HTTP_201_CREATED)
+    except Photographer.DoesNotExist:
+        return Response({'detail': 'Photographer not found.'}, status=status.HTTP_404_NOT_FOUND)
