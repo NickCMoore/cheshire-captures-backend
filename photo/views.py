@@ -89,6 +89,7 @@ class PhotoViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(photographer=self.request.user.photographer)
 
+# ViewSet for handling CRUD operations for Tag model
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
