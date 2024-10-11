@@ -100,18 +100,17 @@ MIDDLEWARE = [
 ]
 
 # CORS settings
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [os.environ.get('CLIENT_ORIGIN', '')]
+if 'CLIENT_ORIGIN' in os.environ:
+    CORS_ALLOWED_ORIGINS = [
+        os.environ.get('CLIENT_ORIGIN')
+    ]
 if 'CLIENT_ORIGIN_DEV' in os.environ:
     extracted_url = re.match(r'^.+-', os.environ.get('CLIENT_ORIGIN_DEV', ''), re.IGNORECASE).group(0)
     CORS_ALLOWED_ORIGIN_REGEXES = [
         rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
     ]
 
-CSRF_TRUSTED_ORIGINS = [
-    'https://8000-nickcmoore-cheshirecapt-1t388js0qvn.ws-eu116.gitpod.io',
-    # Add any other URLs that need to be trusted
-]
+CORS_ALLOW_CREDENTIALS = True
 
 
 
