@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 import re
+import cloudinary
 import dj_database_url
 from datetime import timedelta
 
@@ -55,6 +56,10 @@ INSTALLED_APPS = [
     'photo',
     'photographers',
 ]
+
+cloudinary.config(
+ secure=True
+)
 
 SITE_ID = 1
 
