@@ -30,32 +30,30 @@ ALLOWED_HOSTS = [
     '8000-nickcmoore-cheshirecapt-1t388js0qvn.ws-eu116.gitpod.io'
 ]
 
-# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary_storage',
     'django.contrib.staticfiles',
-    'cloudinary',
-    'django_filters',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'dj_rest_auth',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'dj_rest_auth',
     'dj_rest_auth.registration',
+    'cloudinary_storage',
+    'cloudinary',
+    'django_filters',
+    'rest_framework',
+    'rest_framework.authtoken',
     'drf_yasg',
     'corsheaders',
     'messaging',
     'photo',
     'photographers',
 ]
-
 
 SITE_ID = 1
 
@@ -98,6 +96,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 # CORS settings
