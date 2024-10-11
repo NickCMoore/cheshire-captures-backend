@@ -6,6 +6,13 @@ class TagSerializer(serializers.ModelSerializer):
         model = Tag
         fields = '__all__'
 
+class PhotoRatingSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only=True)  
+
+    class Meta:
+        model = PhotoRating
+        fields = ['id', 'user', 'photo', 'rating', 'created_at']
+
 class PhotoSerializer(serializers.ModelSerializer):
     photographer_display_name = serializers.CharField(
         source='photographer.display_name', read_only=True
