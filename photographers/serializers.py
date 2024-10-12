@@ -8,9 +8,10 @@ class PhotographerSerializer(serializers.ModelSerializer):
     is_user = serializers.SerializerMethodField()
 
     def get_is_user(self, obj):
-        request = self.context['request']
-        return request.user == obj.user
-
+        request = self.context.get('request', None)
+        if request and request.user.is_authenticated:
+            return request.user == obj.user
+        return False
 
     class Meta:
         model = Photographer
@@ -22,17 +23,17 @@ class PhotographerSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'user', 'created_at', 'updated_at']
 
     def validate_website(self, value):
-        if value and not value.startswith(('http://', 'https://')):
+        if value and value.strip() and not value.startswith(('http://', 'https://')):
             raise serializers.ValidationError("Website must start with 'http://' or 'https://'.")
         return value
 
     def validate_instagram(self, value):
-        if value and not value.startswith(('http://', 'https://')):
+        if value and value.strip() and not value.startswith(('http://', 'https://')):
             raise serializers.ValidationError("Instagram link must start with 'http://' or 'https://'.")
         return value
 
     def validate_twitter(self, value):
-        if value and not value.startswith(('http://', 'https://')):
+        if value and value.strip() and not value.startswith(('http://', 'https://')):
             raise serializers.ValidationError("Twitter link must start with 'http://' or 'https://'.")
         return value
 
