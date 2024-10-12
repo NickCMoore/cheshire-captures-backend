@@ -53,6 +53,10 @@ class Migration(migrations.Migration):
             model_name='like',
             constraint=models.UniqueConstraint(fields=('user', 'photo'), name='unique_user_photo_like'),
         ),
+        migrations.AddConstraint(
+            model_name='photorating',
+            constraint=models.UniqueConstraint(fields=['user', 'photo'], name='unique_user_photo_rating'),
+        ),
         migrations.AddField(
             model_name='photorating',
             name='photo',
