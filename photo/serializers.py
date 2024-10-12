@@ -33,7 +33,7 @@ class PhotoSerializer(serializers.ModelSerializer):
             'description', 'image_url', 'category', 'tags', 'created_at', 
             'updated_at', 'average_rating', 'user_rating'
         ]
-        read_only_fields = ['photographer', 'created_at', 'updated_at']
+        read_only_fields = ['created_at', 'updated_at']
 
     def get_user_rating(self, obj):
         request = self.context.get('request')

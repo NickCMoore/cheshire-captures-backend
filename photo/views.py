@@ -124,7 +124,10 @@ class PhotoViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 def perform_create(self, serializer):
-    serializer.save(photographer=self.request.user)
+    if isinstance(self.request.user, User):
+        serializer.save(photographer=self.request.user)
+    else:
+        raise serializers.ValidationError("Invalid user type.")
 
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
