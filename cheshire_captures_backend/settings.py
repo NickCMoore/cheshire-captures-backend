@@ -124,9 +124,15 @@ if 'CLIENT_ORIGIN_DEV' in os.environ:
         rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
     ]
 
+CORS_ALLOWED_ORIGINS = [
+    "https://cheshire-captures-4a500dc7ab0a.herokuapp.com",
+]
+
+
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = [
     'https://cheshire-captures-backend-084aac6d9023.herokuapp.com',
+    'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',
     'https://8000-nickcmoore-cheshirecapt-1t388js0qvn.ws-eu116.gitpod.io',
 ]
 
