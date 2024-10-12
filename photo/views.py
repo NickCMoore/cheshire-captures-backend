@@ -123,8 +123,8 @@ class PhotoViewSet(viewsets.ModelViewSet):
         serializer = PhotoRatingSerializer(ratings, many=True)
         return Response(serializer.data)
 
-    def perform_create(self, serializer):
-        serializer.save(photographer=self.request.user.photographer)
+def perform_create(self, serializer):
+    serializer.save(photographer=self.request.user)
 
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
