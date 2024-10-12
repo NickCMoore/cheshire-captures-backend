@@ -14,12 +14,12 @@ class Photographer(models.Model):
     total_likes = models.PositiveIntegerField(default=0)
     profile_image = models.ImageField(
         upload_to='images/', 
-        default='../24633_a5n9zu'
+        default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1728754586/yf3ss5ywaxijslaanqqs.jpg'
     )
     location = models.CharField(max_length=255, blank=True)
     cover_image = models.ImageField(
         upload_to='cover_images/', 
-        default='../24633_a5n9zu'
+        default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1728754586/yf3ss5ywaxijslaanqqs.jpg'
     )
     website = models.URLField(max_length=255, blank=True)
     instagram = models.URLField(max_length=255, blank=True)
