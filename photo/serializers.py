@@ -29,7 +29,7 @@ class PhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photo
         fields = [
-            'id', 'photographer', 'photographer_display_name', 'title',
+            'id', 'photographer_display_name', 'title',
             'description', 'image_url', 'category', 'tags', 'created_at', 
             'updated_at', 'average_rating', 'user_rating'
         ]
