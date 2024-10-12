@@ -8,6 +8,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import Photo, Tag, Like, Comment, PhotoRating
 from .serializers import PhotoSerializer, TagSerializer, LikeSerializer, CommentSerializer, PhotoRatingSerializer
 from .filters import PhotoFilter
+from django.shortcuts import get_object_or_404
 
 # Pagination for photos
 class PhotoPagination(PageNumberPagination):
