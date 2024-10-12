@@ -1,8 +1,6 @@
 from django.db import models
 from django.conf import settings
-from photographers.models import Photographer
 from cloudinary.models import CloudinaryField
-
 
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -34,18 +32,18 @@ class Photo(models.Model):
         return self.title
 
 class Like(models.Model):
-    photographer = models.ForeignKey(Photographer, on_delete=models.CASCADE, related_name='likes')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='likes')
     photo = models.ForeignKey(Photo, on_delete=models.CASCADE, related_name='likes')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('photographer', 'photo')
+        unique_together = ('user', 'photo')
 
     def __str__(self):
-        return f"{self.photographer.user.username} likes {self.photo.title}"
+        return f"{self.user.username} likes {self.photo.title}"
 
 class Comment(models.Model):
-    photographer = models.ForeignKey(Photographer, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments')
     photo = models.ForeignKey(Photo, on_delete=models.CASCADE, related_name='comments')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -53,20 +51,20 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['-created_at']
-        unique_together = ('photographer', 'photo', 'content')
+        unique_together = ('user', 'photo', 'content')
 
     def __str__(self):
-        return f"Comment by {self.photographer.user.username} on {self.photo.title}"
+        return f"Comment by {self.user.username} on {self.photo.title}"
 
 class PhotoRating(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='ratings')
     photo = models.ForeignKey(Photo, on_delete=models.CASCADE, related_name='ratings')
-    rating = models.PositiveSmallIntegerField()  
+    rating = models.PositiveSmallIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('user', 'photo')  
+        unique_together = ('user', 'photo')
 
     def __str__(self):
         return f"{self.user.username} rated {self.photo.title} with {self.rating} stars"
