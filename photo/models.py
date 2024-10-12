@@ -32,18 +32,21 @@ class Photo(models.Model):
         return self.title
 
 class Like(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='likes')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='likes', default=1)
     photo = models.ForeignKey(Photo, on_delete=models.CASCADE, related_name='likes')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('user', 'photo')
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'photo'], name='unique_user_photo_like')
+        ]
 
     def __str__(self):
         return f"{self.user.username} likes {self.photo.title}"
 
+
 class Comment(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments', default=1)
     photo = models.ForeignKey(Photo, on_delete=models.CASCADE, related_name='comments')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -51,7 +54,9 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['-created_at']
-        unique_together = ('user', 'photo', 'content')
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'photo', 'content'], name='unique_user_photo_content')
+        ]
 
     def __str__(self):
         return f"Comment by {self.user.username} on {self.photo.title}"
@@ -64,7 +69,9 @@ class PhotoRating(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('user', 'photo')
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'photo'], name='unique_user_photo_rating')
+        ]
 
     def __str__(self):
         return f"{self.user.username} rated {self.photo.title} with {self.rating} stars"
