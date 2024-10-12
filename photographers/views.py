@@ -50,7 +50,10 @@ class TopPhotographersView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        return Photographer.objects.annotate(follower_count=Count('followers')).order_by('-follower_count')
+        # Exclude photographers whose associated user has been deleted (user__isnull=False)
+        return Photographer.objects.filter(user__isnull=False) \
+                                   .annotate(follower_count=Count('followers')) \
+                                   .order_by('-follower_count')
 
 class PhotographerFollowersAPIView(APIView):
     """
