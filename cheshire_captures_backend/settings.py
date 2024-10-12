@@ -28,6 +28,7 @@ ALLOWED_HOSTS = [
     os.environ.get('CLIENT_ORIGIN_DEV', ''),
     'cheshire-captures-backend-084aac6d9023.herokuapp.com',
     '127.0.0.1',
+    'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',
     '8000-nickcmoore-cheshirecapt-1t388js0qvn.ws-eu116.gitpod.io'
 ]
 
