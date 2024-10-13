@@ -25,7 +25,7 @@ class PhotoListCreateView(generics.ListCreateAPIView):
     parser_classes = [MultiPartParser, FormParser]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_class = PhotoFilter
-    search_fields = ['title', 'description', 'category', 'photographer__display_name']
+    search_fields = ['title', 'description', 'category', 'photographer__username']  
     ordering_fields = ['created_at', 'title']
 
     def perform_create(self, serializer):
@@ -112,29 +112,29 @@ class PhotoRatingsView(generics.ListAPIView):
         photo = get_object_or_404(Photo, pk=self.kwargs['pk'])
         return PhotoRating.objects.filter(photo=photo)
 
+# Create and list tags for photos
 class TagListCreateView(generics.ListCreateAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user)
+        serializer.save()
 
-
-
+# Create and list likes for photos
 class LikeListCreateView(generics.ListCreateAPIView):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save(follower=self.request.user)
+        serializer.save(user=self.request.user)
 
-
+# Create and list comments for photos
 class CommentListCreateView(generics.ListCreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
-        serializer.save(photographer=self.request.user)
+        serializer.save(user=self.request.user)
