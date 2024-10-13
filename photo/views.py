@@ -58,8 +58,10 @@ class MyPhotosListView(generics.ListAPIView):
         end_date = self.request.query_params.get('end_date')
 
         if start_date:
+            print(f"Filtering from start_date: {start_date}")  # For debugging
             queryset = queryset.filter(created_at__gte=parse_date(start_date))
         if end_date:
+            print(f"Filtering until end_date: {end_date}")  # For debugging
             queryset = queryset.filter(created_at__lte=parse_date(end_date))
 
         return queryset
@@ -137,10 +139,13 @@ class CommentListCreateView(generics.ListCreateAPIView):
 
     # Get comments for the specific photo
     def get_queryset(self):
-        photo = get_object_or_404(Photo, pk=self.kwargs.get('pk')) 
+        photo = get_object_or_404(Photo, pk=self.kwargs.get('pk'))
+        print(f"Fetching comments for photo ID: {photo.pk}")  # Debugging
         return Comment.objects.filter(photo=photo)
 
     # Add a new comment for the specific photo
     def perform_create(self, serializer):
-        photo = get_object_or_404(Photo, pk=self.kwargs.get('pk'))  
+        photo = get_object_or_404(Photo, pk=self.kwargs.get('pk'))
+        print(f"Adding comment to photo ID: {photo.pk}")  # Debugging
         serializer.save(user=self.request.user, photo=photo)
+
