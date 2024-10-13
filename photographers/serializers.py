@@ -6,12 +6,24 @@ class PhotographerSerializer(serializers.ModelSerializer):
     updated_at = serializers.DateTimeField(format="%d %b %Y", read_only=True)
     user = serializers.ReadOnlyField(source='user.username', read_only=True)  
     is_user = serializers.SerializerMethodField()
+    profile_image = serializers.SerializerMethodField()
+    cover_image = serializers.SerializerMethodField()
 
     def get_is_user(self, obj):
         request = self.context.get('request', None)
         if request and request.user.is_authenticated:
             return request.user == obj.user
         return False
+
+    def get_profile_image(self, obj):
+        if obj.profile_image:
+            return obj.profile_image.url
+        return None
+
+    def get_cover_image(self, obj):
+        if obj.cover_image:
+            return obj.cover_image.url
+        return None
 
     class Meta:
         model = Photographer
