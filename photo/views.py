@@ -60,23 +60,28 @@ class MyPhotosListView(generics.ListAPIView):
         if start_date:
             try:
                 parsed_start_date = parse_date(start_date)
-                start_date_with_time = datetime.combine(parsed_start_date, datetime.min.time())
-                queryset = queryset.filter(created_at__gte=start_date_with_time)
-            except ValueError:
-                print("Error parsing start_date")
+                if parsed_start_date:
+                    start_date_with_time = datetime.combine(parsed_start_date, datetime.min.time())
+                    queryset = queryset.filter(created_at__gte=start_date_with_time)
+                else:
+                    print(f"Error: Invalid start_date {start_date}")
+            except ValueError as e:
+                print(f"Error parsing start_date: {e}")
 
         if end_date:
             try:
                 parsed_end_date = parse_date(end_date)
-                end_date_with_time = datetime.combine(parsed_end_date, datetime.max.time())
-                queryset = queryset.filter(created_at__lte=end_date_with_time)
-            except ValueError:
-                print("Error parsing end_date")
+                if parsed_end_date:
+                    end_date_with_time = datetime.combine(parsed_end_date, datetime.max.time())
+                    queryset = queryset.filter(created_at__lte=end_date_with_time)
+                else:
+                    print(f"Error: Invalid end_date {end_date}")
+            except ValueError as e:
+                print(f"Error parsing end_date: {e}")
 
         print(f"Filtered queryset (count: {queryset.count()}): {queryset}")
 
         return queryset
-
 
 # List the top-rated photos
 class TopRatedPhotosView(generics.ListAPIView):
@@ -144,20 +149,21 @@ class LikeListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-# Create and list comments for photos
 class CommentListCreateView(generics.ListCreateAPIView):
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     # Get comments for the specific photo
     def get_queryset(self):
-        photo = get_object_or_404(Photo, pk=self.kwargs.get('pk'))
+        photo_id = self.kwargs.get('pk')
+        photo = get_object_or_404(Photo, pk=photo_id)
         print(f"Fetching comments for photo ID: {photo.pk}")  # Debugging
         return Comment.objects.filter(photo=photo)
 
     # Add a new comment for the specific photo
     def perform_create(self, serializer):
-        photo = get_object_or_404(Photo, pk=self.kwargs.get('pk'))
+        photo_id = self.kwargs.get('pk')
+        photo = get_object_or_404(Photo, pk=photo_id)
         print(f"Adding comment to photo ID: {photo.pk}")  # Debugging
         serializer.save(user=self.request.user, photo=photo)
 
