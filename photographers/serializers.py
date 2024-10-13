@@ -4,10 +4,8 @@ from .models import Photographer, Follow
 class PhotographerSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(format="%d %b %Y", read_only=True)
     updated_at = serializers.DateTimeField(format="%d %b %Y", read_only=True)
-    user = serializers.ReadOnlyField(source='user.username', read_only=True)  
+    user = serializers.ReadOnlyField(source='user.username', read_only=True)
     is_user = serializers.SerializerMethodField()
-    profile_image = serializers.SerializerMethodField()
-    cover_image = serializers.SerializerMethodField()
 
     def get_is_user(self, obj):
         request = self.context.get('request', None)
@@ -24,6 +22,15 @@ class PhotographerSerializer(serializers.ModelSerializer):
         if obj.cover_image:
             return obj.cover_image.url
         return None
+
+    class Meta:
+        model = Photographer
+        fields = [
+            'id', 'user', 'display_name', 'bio', 'profile_image', 
+            'location', 'cover_image', 'website', 'instagram', 
+            'twitter', 'created_at', 'updated_at', 'is_user'
+        ]
+        read_only_fields = ['id', 'user', 'created_at', 'updated_at']
 
     class Meta:
         model = Photographer
