@@ -125,7 +125,8 @@ if 'CLIENT_ORIGIN_DEV' in os.environ:
     ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://cheshire-captures-4a500dc7ab0a.herokuapp.com",
+    'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',
+    'https://3000-nickcmoore-cheshirecapt-hbw1s77xkey.ws-eu116.gitpod.io',
 ]
 
 
