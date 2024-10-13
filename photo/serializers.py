@@ -44,7 +44,7 @@ class LikeSerializer(serializers.ModelSerializer):
         fields = ['id', 'photo', 'user', 'created_at']
 
 class CommentSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')  
+    user = serializers.ReadOnlyField(source='user.username')
     photo = serializers.PrimaryKeyRelatedField(queryset=Photo.objects.all())
 
     class Meta:
@@ -52,4 +52,8 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ['id', 'photo', 'user', 'content', 'created_at', 'updated_at']
 
     def create(self, validated_data):
-        return Comment.objects.create(**validated_data)
+        user = self.context['request'].user
+        photo = validated_data['photo']
+        content = validated_data['content']
+        
+        return Comment.objects.create(user=user, photo=photo, content=content)
