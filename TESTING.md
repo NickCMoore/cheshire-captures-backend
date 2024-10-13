@@ -155,12 +155,40 @@ In addition to the automated tests, I performed manual testing using **Postman**
 
 ## Known Bugs
 
+Bug tracking for the Cheshire Captures project has been closely monitored using the GitHub Project Board. All bugs and feature requests are organized into various states such as "To Do," "In Progress," "Testing," and "Done" to ensure efficient project management and prioritization.
+
+### Tracking Bugs on GitHub Project Board
+
+The following bugs were identified during the development of Cheshire Captures:
+
+- **Not possible to add comments to photos** – Bug related to the comment functionality where users cannot leave comments on photos.
+- **Like button non-functional** – The like button on photo details pages does not trigger the required backend functionality.
+- **Filter not working on My Photos page** – Filter functionality on the "My Photos" page is not returning the correct results.
+- **Unfollow option not available** – A bug prevents users from unfollowing photographers due to an issue with the follow button.
+- **Unable to unlike a photo** – Users face an authentication error when trying to unlike a previously liked photo.
+- **Cannot edit or delete comments** – Authentication-related issue causing users to be unable to edit or delete their own comments.
+- **Followers page not returning** – Clicking on the "View Followers" option does not display the correct followers page.
+- **Can't submit a rating** – Users are unable to submit ratings for photos due to a server-side issue.
+
+### Additional Bugs from the GitHub Board:
+
+- **Profile NavBar** – Issues with the navbar layout when viewing profiles.
+- **Search functionality not working** – Search does not work on the Gallery and Popular Photographers pages.
+- **Unable to sign out** – Users face an error when trying to sign out.
+- **Unable to change password** – Authentication error prevents users from changing their passwords.
+- **Initial home page load presents 401 error** – A 401 authentication error occurs when loading the home page before a user is authenticated.
+
+These bugs were tracked and categorized according to severity, and each was assigned to a developer for resolution. You can view the full backlog, roadmap, and specific bug details on the GitHub Project Board. This allowed for efficient tracking and ensured that bugs were either addressed or marked for future iterations based on priority.
+
 ### Resolved Bugs
 
-1. **Profile deletion issue**: During testing, deleting profiles did not remove the associated photos. This was resolved by adding a cascading delete on the `Photo` model.
-2. **Duplicate likes**: Users were able to like a photo more than once due to a missing uniqueness constraint on the `Like` model. This was resolved by adding a unique constraint between `user` and `photo`.
-3. **Rating system**: Initially, users could rate a photo multiple times. After updating the `PhotoRating` model with a uniqueness constraint for `user` and `photo`, this issue was resolved.
+1. **Profile deletion issue** – Deleting profiles did not remove associated photos. This was resolved by adding cascading delete functionality to the `Photo` model.
+2. **Duplicate likes** – Users could like a photo multiple times. This was fixed by implementing a uniqueness constraint on the `Like` model.
+3. **Rating system bug** – Users could rate a photo more than once. The issue was resolved by enforcing uniqueness constraints between `user` and `photo` in the `PhotoRating` model.
 
 ![Resolved Bug Example](images/resolved-bug.png)
+
+For a full list of bugs and features, please refer to the [GitHub Project Board](https://github.com/users/NickCMoore/projects/2).
+
 
 For more details on testing and deployment, return to the [README file](README.md).
