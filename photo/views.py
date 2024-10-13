@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
+from django.utils.dateparse import parse_date
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Photo, Tag, Like, Comment, PhotoRating
 from .serializers import PhotoSerializer, TagSerializer, LikeSerializer, CommentSerializer, PhotoRatingSerializer
@@ -42,14 +43,26 @@ class PhotoDetailView(generics.RetrieveUpdateDestroyAPIView):
             return Response({'error': 'You do not have permission to delete this photo.'}, status=status.HTTP_403_FORBIDDEN)
         return super().delete(request, *args, **kwargs)
 
-# View for listing the user's own photos
+# View for listing the user's own photos, with date filtering
 class MyPhotosListView(generics.ListAPIView):
     serializer_class = PhotoSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = PhotoPagination
 
     def get_queryset(self):
-        return Photo.objects.filter(photographer=self.request.user)
+        user = self.request.user
+        queryset = Photo.objects.filter(photographer=user)
+
+        # Get start and end dates from query params for filtering
+        start_date = self.request.query_params.get('start_date')
+        end_date = self.request.query_params.get('end_date')
+
+        if start_date:
+            queryset = queryset.filter(created_at__gte=parse_date(start_date))
+        if end_date:
+            queryset = queryset.filter(created_at__lte=parse_date(end_date))
+
+        return queryset
 
 # List the top-rated photos
 class TopRatedPhotosView(generics.ListAPIView):
