@@ -54,22 +54,29 @@ class MyPhotosListView(generics.ListAPIView):
         user = self.request.user
         queryset = Photo.objects.filter(photographer=user)
 
-        # Get start and end dates from query params for filtering
         start_date = self.request.query_params.get('start_date')
         end_date = self.request.query_params.get('end_date')
 
         if start_date:
-            start_date = datetime.strptime(start_date, "%Y-%m-%d").replace(hour=0, minute=0, second=0)
-            queryset = queryset.filter(created_at__gte=start_date)
-        
-        if end_date:
-            end_date = datetime.strptime(end_date, "%Y-%m-%d").replace(hour=23, minute=59, second=59)
-            queryset = queryset.filter(created_at__lte=end_date)
+            try:
+                parsed_start_date = parse_date(start_date)
+                start_date_with_time = datetime.combine(parsed_start_date, datetime.min.time())
+                queryset = queryset.filter(created_at__gte=start_date_with_time)
+            except ValueError:
+                print("Error parsing start_date")
 
-        print(f"Final queryset count: {queryset.count()}")
-        print(f"Filtered queryset: {queryset}")
+        if end_date:
+            try:
+                parsed_end_date = parse_date(end_date)
+                end_date_with_time = datetime.combine(parsed_end_date, datetime.max.time())
+                queryset = queryset.filter(created_at__lte=end_date_with_time)
+            except ValueError:
+                print("Error parsing end_date")
+
+        print(f"Filtered queryset (count: {queryset.count()}): {queryset}")
 
         return queryset
+
 
 # List the top-rated photos
 class TopRatedPhotosView(generics.ListAPIView):
