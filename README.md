@@ -1,67 +1,168 @@
-# Cheshire Captures - Backend API
-
-Welcome to Cheshire Captures - a content-sharing platform designed to allow users to browse, comment, like, and share their photographic experiences with the Cheshire community. This project uses the Django REST Framework to build a robust backend API, providing a data interface for the front-end application built with React.
+# **Cheshire Captures API**
 
 ## Table of Contents
 
-1. [Project Overview](#project-overview)
-2. [Features](#features)
-3. [Technologies Used](#technologies-used)
-4. [API Endpoints](#api-endpoints)
-5. [Database Schema](#database-schema)
+- [Project](#project)
+  * [Objective](#objective)
+  * [Links to Deployed Project](#links-to-deployed-project)
+- [Project Structure](#project-structure)
+  * [Developer User Stories](#developer-user-stories)
+    + [Profiles](#profiles)
+    + [Photos](#photos)
+    + [Comments](#comments)
+    + [Likes](#likes)
+    + [Followers](#followers)
+    + [Search and Filter](#search-and-filter)
+    + [Ratings and Reviews](#ratings-and-reviews)
+- [Database Design](#database-design)
+  * [Models](#models)
+- [Features](#features)
+  * [Homepage](#homepage)
+  * [Profile Data](#profile-data)
+  * [Photos Data](#photos-data)
+  * [Comments Data](#comments-data)
+  * [Likes Data](#likes-data)
+  * [Followers Data](#followers-data)
+  * [Ratings and Reviews Data](#ratings-and-reviews-data)
+- [Agile Workflow](#agile-workflow)
+  * [Github Project Board](#github-project-board)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [Credits](#credits)
 
-## Project Overview
+# **Project**
 
-Cheshire Captures provides a platform for users to create, view, comment on, and like photographic content. Users can also follow each other to stay updated with the latest posts. The backend API supports all these functionalities and serves data to the front-end React application.
+## Objective
 
-## Features
+**Cheshire Captures API** provides a backend database to manage user profiles, photo uploads, comments, likes, follows, and reviews for the Cheshire Captures platform. The API allows photographers and enthusiasts to interact with each other by sharing their work, following profiles, leaving comments, and rating photos.
 
-- **User Authentication:** Register, login, and manage user accounts.
-- **Content Management:** Create, read, update, and delete posts.
-- **User Interactions:** Comment on posts, like posts, and follow users.
-- **Pagination:** Efficient data handling through pagination for all list views.
-- **JWT Authentication:** Secure user authentication using JSON Web Tokens.
-- **Search and Filter:** Search posts and filter by categories, popularity, and more.
+The API includes search and filter functionality to enhance user experience, enabling users to easily find photographers or photos of interest.
 
-## Technologies Used
+## Links to Deployed Project
 
-- **Backend Framework:** Django REST Framework
-- **Authentication:** Django AllAuth, dj-rest-auth, SimpleJWT
-- **Database:** PostgreSQL (for production), SQLite (for development)
-- **Storage:** Cloudinary for image storage
-- **Deployment:** Heroku
-- **Others:** Django Filters, CORS Headers
+  + The project is deployed on Heroku: [Deployed Cheshire Captures API](https://cheshire-captures-backend-084aac6d9023.herokuapp.com/)
+  + The front-end of the project is available at: [Cheshire Captures Front End](https://cheshire-captures-4a500dc7ab0a.herokuapp.com/)
 
-## API Endpoints
+## Project Structure
 
-### Authentication
+The structure of this project follows the **Code Institute DRF Walkthrough** for backend API development and the **Moments Walkthrough** for building a React front-end. Additional custom models and logic have been developed to tailor this platform to its unique purpose of sharing and showcasing photography.
 
-- `POST /dj-rest-auth/login/` - Login a user.
-- `POST /dj-rest-auth/logout/` - Logout a user.
-- `POST /dj-rest-auth/registration/` - Register a new user.
+## Developer User Stories
 
-### Posts
+### Profiles
 
-- `GET /posts/` - Retrieve a list of posts with pagination.
-- `POST /posts/` - Create a new post.
-- `GET /posts/<id>/` - Retrieve a specific post.
-- `PUT /posts/<id>/` - Update a specific post.
-- `DELETE /posts/<id>/` - Delete a specific post.
+- As a user, I can create a profile upon registration, so that my profile is automatically generated and displayed.
+- As a user, I can view all profiles to discover photographers on the platform.
+- As a user, I can follow/unfollow other profiles to stay updated on their latest photos.
+- As a user, I can edit my profile to update my bio, profile picture, and social links.
+
+### Photos
+
+- As a user, I can upload photos, so that they are displayed in the gallery.
+- As a user, I can view all photos in the gallery to discover new work.
+- As a user, I can search for specific photos by keywords or photographer names.
+- As a user, I can filter photos by category to find photos related to my interests.
 
 ### Comments
 
-- `GET /comments/` - Retrieve a list of comments with pagination.
-- `POST /comments/` - Create a new comment.
-- `GET /comments/<id>/` - Retrieve a specific comment.
-- `PUT /comments/<id>/` - Update a specific comment.
-- `DELETE /comments/<id>/` - Delete a specific comment.
+- As a user, I can leave comments on photos to engage with the photographer's work.
+- As a user, I can edit or delete my comments.
+- As a user, I can view all comments on a specific photo to see what others are saying.
 
 ### Likes
 
-- `POST /likes/` - Like a post.
-- `DELETE /likes/<id>/` - Unlike a post.
+- As a user, I can like photos to show appreciation for the content.
+- As a user, I can remove my like if I change my mind.
 
 ### Followers
 
-- `POST /followers/` - Follow a user.
-- `DELETE /followers/<id>/` - Unfollow a user.
+- As a user, I can follow/unfollow photographers to keep up with their work.
+- As a user, I can view a list of all the users I follow.
+
+### Search and Filter
+
+- As a user, I can search for photos or photographers by keyword to find content that interests me.
+- As a user, I can filter photos by category to narrow down my search results.
+
+### Ratings and Reviews
+
+- As a user, I can rate a photo from 1 to 5 stars to express my opinion on its quality.
+- As a user, I can leave a review with a star rating for photos.
+
+## Database Design
+
+### Models
+
+The following models have been developed for the Cheshire Captures API:
+
+- **User**: Extends Django's User model.
+- **Profile**: Automatically created upon user registration to store additional user information like bio and profile picture.
+- **Photo**: Stores information related to each uploaded image.
+- **Comment**: Allows users to comment on photos.
+- **Like**: Tracks users who like specific photos.
+- **Follow**: Handles the follower relationship between profiles.
+- **Rating**: Stores star ratings for photos.
+- **Review**: Stores user reviews with star ratings for photos.
+
+The relationships between these models are illustrated in the following entity relationship diagram:
+![ERD](https://link-to-your-ERD-image)
+
+## Features
+
+### Homepage
+
+The API's root route welcomes users and provides links to the main API endpoints.
+
+### Profile Data
+
+Users can view and update their profiles. Profile data includes the user’s bio, profile picture, followers, and more.
+
+### Photos Data
+
+Users can upload, view, edit, and delete their photos. The gallery allows all users to browse the photos shared by the community.
+
+### Comments Data
+
+Users can view, add, edit, and delete comments on photos to engage with photographers and their work.
+
+### Likes Data
+
+Users can like photos to show appreciation and remove likes if desired.
+
+### Followers Data
+
+Users can follow/unfollow other photographers, helping them keep up with their favorite photographers' work.
+
+### Ratings and Reviews Data
+
+Users can rate and review photos to provide feedback to photographers. These ratings contribute to the "Top-Rated Photos" section.
+
+## Agile Workflow
+
+### GitHub Project Board
+
+The project was managed using GitHub’s Kanban board to organize tasks based on user stories and development goals. Each feature was tracked and prioritized using the MoSCoW method.
+
+![GitHub Project Board](https://github.com/users/NickCMoore/projects/3)
+
+## Testing
+
+Please refer to the [Testing Documentation](TESTING.md) for more detailed information on the testing process.
+
+## Deployment
+
+The project was deployed on Heroku. Below are the steps to deploy:
+
+1. Create a new Heroku app.
+2. Connect the Heroku app to your GitHub repository.
+3. Add environment variables such as `DATABASE_URL`, `CLOUDINARY_URL`, and `SECRET_KEY`.
+4. Deploy the app via Heroku’s manual deploy or enable automatic deploys from the `main` branch.
+
+For more detailed instructions, please see the [Deployment Documentation](DEPLOYMENT.md).
+
+## Credits
+
+- The project structure was inspired by the **Code Institute DRF** and **Moments Walkthrough** projects.
+- Special thanks to **Unsplash** for providing free, high-quality images for the platform.
+- Thanks to **Cloudinary** for enabling seamless media file storage and hosting.
+- Stack Overflow and other online resources provided valuable support throughout the development process.
