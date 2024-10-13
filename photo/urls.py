@@ -12,6 +12,6 @@ urlpatterns = [
     path('photos/<int:pk>/rate/', rate_photo, name='photo-rate'),
     path('photos/<int:pk>/ratings/', PhotoRatingsView.as_view(), name='photo-ratings'),
     path('tags/', TagListCreateView.as_view(), name='tag-list'),
-    path('likes/', LikeListCreateView.as_view(), name='like-list'),
-    path('comments/', CommentListCreateView.as_view(), name='comment-list'),
+    path('photos/<int:pk>/like/', LikeListCreateView.as_view(), name='like-list'), 
+    path('photos/<int:pk>/comments/', CommentListCreateView.as_view(), name='comment-list'),  
 ]
