@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.contrib.auth.models import User
-
+from cloudinary.models import CloudinaryField  
 
 class Photographer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -12,15 +12,11 @@ class Photographer(models.Model):
     bio = models.TextField(blank=True)
     follower_count = models.PositiveIntegerField(default=0)
     total_likes = models.PositiveIntegerField(default=0)
-    profile_image = models.ImageField(
-        upload_to='images/', 
-        default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1727862662/vestrahorn-mountains-stokksnes-iceland_aoqbtp.jpg'
-    )
+
+    profile_image = CloudinaryField('image', default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1727862662/vestrahorn-mountains-stokksnes-iceland_aoqbtp.jpg')
+    cover_image = CloudinaryField('image', default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1727862662/vestrahorn-mountains-stokksnes-iceland_aoqbtp.jpg')
+
     location = models.CharField(max_length=255, blank=True)
-    cover_image = models.ImageField(
-        upload_to='cover_images/', 
-        default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1727862662/vestrahorn-mountains-stokksnes-iceland_aoqbtp.jpg'
-    )
     website = models.URLField(max_length=255, blank=True)
     instagram = models.URLField(max_length=255, blank=True)
     twitter = models.URLField(max_length=255, blank=True)
@@ -36,7 +32,6 @@ def create_photographer(sender, instance, created, **kwargs):
     if created:
         Photographer.objects.create(user=instance)
 
-
 class Follow(models.Model):
     follower = models.ForeignKey(Photographer, related_name='following', on_delete=models.CASCADE)
     following = models.ForeignKey(Photographer, related_name='followers', on_delete=models.CASCADE)
@@ -47,7 +42,6 @@ class Follow(models.Model):
 
     def __str__(self):
         return f"{self.follower.user.username} follows {self.following.user.username}"
-
 
 @receiver(post_save, sender=Follow)
 def update_follower_count_on_create(sender, instance, created, **kwargs):
