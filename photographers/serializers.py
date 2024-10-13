@@ -13,23 +13,33 @@ class PhotographerSerializer(serializers.ModelSerializer):
             return request.user == obj.user
         return False
 
+    def get_profile_image(self, obj):
+        if obj.profile_image:
+            return obj.profile_image.url
+        return None
+
+    def get_cover_image(self, obj):
+        if obj.cover_image:
+            return obj.cover_image.url
+        return None
+
     class Meta:
         model = Photographer
         fields = [
-            'id', 'user', 'display_name', 'bio', 'profile_image',
-            'location', 'cover_image', 'website', 'instagram',
+            'id', 'user', 'display_name', 'bio', 'profile_image', 
+            'location', 'cover_image', 'website', 'instagram', 
             'twitter', 'created_at', 'updated_at', 'is_user'
         ]
         read_only_fields = ['id', 'user', 'created_at', 'updated_at']
 
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        if instance.profile_image and not instance.profile_image.startswith('http'):
-            representation['profile_image'] = instance.profile_image.url
-        if instance.cover_image and not instance.cover_image.startswith('http'):
-            representation['cover_image'] = instance.cover_image.url
-        return representation
-
+    class Meta:
+        model = Photographer
+        fields = [
+            'id', 'user', 'display_name', 'bio', 'profile_image', 
+            'location', 'cover_image', 'website', 'instagram', 
+            'twitter', 'created_at', 'updated_at', 'is_user'
+        ]
+        read_only_fields = ['id', 'user', 'created_at', 'updated_at']
 
     def validate_website(self, value):
         if value and value.strip() and not value.startswith(('http://', 'https://')):
