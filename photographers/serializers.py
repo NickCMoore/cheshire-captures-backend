@@ -12,27 +12,24 @@ class PhotographerSerializer(serializers.ModelSerializer):
         if request and request.user.is_authenticated:
             return request.user == obj.user
         return False
-    profile_image = serializers.SerializerMethodField()
-    cover_image = serializers.SerializerMethodField()
-
-    def get_profile_image(self, obj):
-        if obj.profile_image and obj.profile_image.url.startswith('http'):
-            return obj.profile_image.url
-        return f'https://res.cloudinary.com/dwgtce0rh/{obj.profile_image.url}'
-
-    def get_cover_image(self, obj):
-        if obj.cover_image and obj.cover_image.url.startswith('http'):
-            return obj.cover_image.url
-        return f'https://res.cloudinary.com/dwgtce0rh/{obj.cover_image.url}'
 
     class Meta:
         model = Photographer
         fields = [
-            'id', 'user', 'display_name', 'bio', 'profile_image', 
-            'location', 'cover_image', 'website', 'instagram', 
+            'id', 'user', 'display_name', 'bio', 'profile_image',
+            'location', 'cover_image', 'website', 'instagram',
             'twitter', 'created_at', 'updated_at', 'is_user'
         ]
         read_only_fields = ['id', 'user', 'created_at', 'updated_at']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if instance.profile_image and not instance.profile_image.startswith('http'):
+            representation['profile_image'] = instance.profile_image.url
+        if instance.cover_image and not instance.cover_image.startswith('http'):
+            representation['cover_image'] = instance.cover_image.url
+        return representation
+
 
     def validate_website(self, value):
         if value and value.strip() and not value.startswith(('http://', 'https://')):
