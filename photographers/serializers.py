@@ -6,7 +6,7 @@ class PhotographerSerializer(serializers.ModelSerializer):
     updated_at = serializers.DateTimeField(format="%d %b %Y", read_only=True)
     user = serializers.ReadOnlyField(source='user.username', read_only=True)
     is_user = serializers.SerializerMethodField()
-    
+
     def get_is_user(self, obj):
         request = self.context.get('request', None)
         if request and request.user.is_authenticated:
@@ -24,13 +24,6 @@ class PhotographerSerializer(serializers.ModelSerializer):
         if obj.cover_image and obj.cover_image.url.startswith('http'):
             return obj.cover_image.url
         return f'https://res.cloudinary.com/dwgtce0rh/{obj.cover_image.url}'
-
-    class Meta:
-        model = Photographer
-        fields = ['id', 'user', 'display_name', 'bio', 'profile_image', 
-                  'location', 'cover_image', 'website', 'instagram', 
-                  'twitter', 'created_at', 'updated_at', 'is_user']
-
 
     class Meta:
         model = Photographer
