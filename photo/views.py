@@ -10,6 +10,7 @@ from .models import Photo, Tag, Like, Comment, PhotoRating
 from .serializers import PhotoSerializer, TagSerializer, LikeSerializer, CommentSerializer, PhotoRatingSerializer
 from .filters import PhotoFilter
 from django.shortcuts import get_object_or_404
+from datetime import datetime
 
 # Pagination for photos
 class PhotoPagination(PageNumberPagination):
@@ -58,11 +59,15 @@ class MyPhotosListView(generics.ListAPIView):
         end_date = self.request.query_params.get('end_date')
 
         if start_date:
-            print(f"Filtering from start_date: {start_date}")  # For debugging
-            queryset = queryset.filter(created_at__gte=parse_date(start_date))
+            start_date = datetime.strptime(start_date, "%Y-%m-%d").replace(hour=0, minute=0, second=0)
+            queryset = queryset.filter(created_at__gte=start_date)
+        
         if end_date:
-            print(f"Filtering until end_date: {end_date}")  # For debugging
-            queryset = queryset.filter(created_at__lte=parse_date(end_date))
+            end_date = datetime.strptime(end_date, "%Y-%m-%d").replace(hour=23, minute=59, second=59)
+            queryset = queryset.filter(created_at__lte=end_date)
+
+        print(f"Final queryset count: {queryset.count()}")
+        print(f"Filtered queryset: {queryset}")
 
         return queryset
 
