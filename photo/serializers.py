@@ -2,9 +2,12 @@ from rest_framework import serializers
 from .models import Photo, Tag, Like, Comment, PhotoRating  
 
 class TagSerializer(serializers.ModelSerializer):
+    created_by = serializers.ReadOnlyField(source='created_by.username') 
+
     class Meta:
         model = Tag
-        fields = '__all__'
+        fields = ['id', 'name', 'created_by', 'created_at']
+
 
 class PhotoRatingSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)  
@@ -43,14 +46,19 @@ class PhotoSerializer(serializers.ModelSerializer):
         return None
 
 class LikeSerializer(serializers.ModelSerializer):
+    follower = serializers.ReadOnlyField(source='follower.username')
     class Meta:
         model = Like
-        fields = ['id', 'user', 'photo', 'created_at'] 
+        fields = ['id', 'photo', 'follower', 'created_at']
+
 
 class CommentSerializer(serializers.ModelSerializer):
-    photographer = serializers.ReadOnlyField(source='photographer.user.username')
-    photo_title = serializers.ReadOnlyField(source='photo.title')
+    photographer = serializers.ReadOnlyField(source='photographer.username')
+    photo = serializers.PrimaryKeyRelatedField(queryset=Photo.objects.all())
 
     class Meta:
         model = Comment
-        fields = ['id', 'photographer', 'photo', 'photo_title', 'content', 'created_at', 'updated_at']
+        fields = ['id', 'photo', 'photographer', 'content', 'created_at', 'updated_at']
+
+    def create(self, validated_data):
+        return Comment.objects.create(**validated_data)

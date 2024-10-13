@@ -112,18 +112,29 @@ class PhotoRatingsView(generics.ListAPIView):
         photo = get_object_or_404(Photo, pk=self.kwargs['pk'])
         return PhotoRating.objects.filter(photo=photo)
 
-# List all tags and create new ones
 class TagListCreateView(generics.ListCreateAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
 
 
-# List all likes and create new ones
+
 class LikeListCreateView(generics.ListCreateAPIView):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
+    permission_classes = [IsAuthenticated]
 
-# List all comments and create new ones
+    def perform_create(self, serializer):
+        serializer.save(follower=self.request.user)
+
+
 class CommentListCreateView(generics.ListCreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(photographer=self.request.user)
