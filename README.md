@@ -149,6 +149,18 @@ The project was managed using GitHub’s Kanban board to organize tasks based on
 
 Please refer to the [Testing Documentation](TESTING.md) for more detailed information on the testing process.
 
+## Technologies Used
+
+### Backend
+
+- **Django (v5.1.2)**: The core Python web framework used to develop the backend of the application, enabling rapid and secure development.
+- **Django REST Framework (v3.14.0)**: Provides powerful tools to create the RESTful API that connects the backend to the React frontend.
+- **PostgreSQL**: A relational database system used to manage all data related to users, photos, comments, and interactions.
+- **Cloudinary (v1.41.0)**: A cloud-based service used for storing and managing image uploads, making it easier to serve user-uploaded media across the platform.
+- **Heroku**: The cloud platform used for deploying the backend of the project, ensuring scalability and reliable hosting.
+- **Gunicorn (v20.1.0)**: A Python WSGI HTTP server used to run the Django application on Heroku in production.
+- **Whitenoise (v6.7.0)**: Ensures efficient serving of static files directly from the Django application in production environments.
+
 ## Deployment
 
 The project was deployed on Heroku. Below are the steps to deploy:
