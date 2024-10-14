@@ -124,7 +124,7 @@ if 'CLIENT_ORIGIN_DEV' in os.environ:
 
 CORS_ALLOW_CREDENTIALS = True
 
-DEBUG = False
+DEBUG = True
 
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = [
