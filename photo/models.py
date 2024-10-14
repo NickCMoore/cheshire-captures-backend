@@ -17,7 +17,7 @@ class Photo(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
 
-    image = models.ImageField(upload_to='images/', default='images/raceday.jpg')
+    image = models.ImageField(upload_to='images/', default='images/mountains')
     likes_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
