@@ -185,6 +185,7 @@ class LikeListCreateView(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 class CommentListCreateView(generics.ListCreateAPIView):
+    queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
@@ -200,4 +201,4 @@ class CommentListCreateView(generics.ListCreateAPIView):
         photo_id = self.kwargs.get('pk')
         photo = get_object_or_404(Photo, pk=photo_id)
         print(f"Adding comment to photo ID: {photo.pk}") 
-        serializer.save(user=self.request.user, photo=photo)
+        serializer.save(photographer=self.request.user)
