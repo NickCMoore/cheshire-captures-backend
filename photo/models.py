@@ -37,14 +37,8 @@ class Like(models.Model):
     photo = models.ForeignKey('Photo', on_delete=models.CASCADE, related_name='likes')
     created_at = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['user', 'photo'], name='unique_user_photo_like')
-        ]
-
     def __str__(self):
         return f"{self.user.username} likes {self.photo.title}"
-
 
 class Comment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments')
@@ -66,11 +60,6 @@ class PhotoRating(models.Model):
     rating = models.PositiveSmallIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['user', 'photo'], name='unique_user_photo_rating')
-        ]
 
     def __str__(self):
         return f"{self.user.username} rated {self.photo.title} with {self.rating} stars"

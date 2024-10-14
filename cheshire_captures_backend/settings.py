@@ -104,6 +104,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',
+    'https://3000-nickcmoore-cheshirecapt-hbw1s77xkey.ws-eu116.gitpod.io',  
+]
+
 # CORS settings
 if 'CLIENT_ORIGIN' in os.environ:
     CORS_ALLOWED_ORIGINS = [
