@@ -10,8 +10,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveConstraint(
-            model_name='comment',
-            name='unique_user_photo_content',
-        ),
+        # Commenting out or removing the constraint removal operation
+        # migrations.RemoveConstraint(
+        #     model_name='comment',
+        #     name='unique_user_photo_content',
+        # ),
     ]
