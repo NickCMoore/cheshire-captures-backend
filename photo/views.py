@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.utils.dateparse import parse_date
 from django_filters.rest_framework import DjangoFilterBackend
@@ -131,6 +132,28 @@ class PhotoRatingsView(generics.ListAPIView):
         photo = get_object_or_404(Photo, pk=self.kwargs['pk'])
         return PhotoRating.objects.filter(photo=photo)
 
+# Like/Unlike photo view
+class PhotoLikeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        photo = get_object_or_404(Photo, pk=pk)
+        user = request.user
+
+        like_instance = Like.objects.filter(user=user, photo=photo).first()
+
+        if like_instance:
+            like_instance.delete()
+            photo.likes_count -= 1
+            photo.save()
+            return Response({'status': 'unliked'}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            Like.objects.create(user=user, photo=photo)
+            photo.likes_count += 1
+            photo.save()
+            return Response({'status': 'liked'}, status=status.HTTP_201_CREATED)
+
+
 # Create and list tags for photos
 class TagListCreateView(generics.ListCreateAPIView):
     queryset = Tag.objects.all()
@@ -157,13 +180,12 @@ class CommentListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         photo_id = self.kwargs.get('pk')
         photo = get_object_or_404(Photo, pk=photo_id)
-        print(f"Fetching comments for photo ID: {photo.pk}")  # Debugging
+        print(f"Fetching comments for photo ID: {photo.pk}") 
         return Comment.objects.filter(photo=photo)
 
     # Add a new comment for the specific photo
     def perform_create(self, serializer):
         photo_id = self.kwargs.get('pk')
         photo = get_object_or_404(Photo, pk=photo_id)
-        print(f"Adding comment to photo ID: {photo.pk}")  # Debugging
+        print(f"Adding comment to photo ID: {photo.pk}") 
         serializer.save(user=self.request.user, photo=photo)
-
