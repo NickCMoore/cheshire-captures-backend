@@ -185,20 +185,16 @@ class LikeListCreateView(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 class CommentListCreateView(generics.ListCreateAPIView):
-    queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    # Get comments for the specific photo
     def get_queryset(self):
         photo_id = self.kwargs.get('pk')
         photo = get_object_or_404(Photo, pk=photo_id)
-        print(f"Fetching comments for photo ID: {photo.pk}") 
         return Comment.objects.filter(photo=photo)
 
-    # Add a new comment for the specific photo
     def perform_create(self, serializer):
         photo_id = self.kwargs.get('pk')
         photo = get_object_or_404(Photo, pk=photo_id)
-        print(f"Adding comment to photo ID: {photo.pk}") 
-        serializer.save(photographer=self.request.user)
+        serializer.save(photographer=self.request.user, photo=photo)
+
