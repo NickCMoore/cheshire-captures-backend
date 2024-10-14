@@ -1,24 +1,20 @@
 from pathlib import Path
 import os
 import re
-import cloudinary
 import dj_database_url
 from datetime import timedelta
+
 
 # Import environment variables if present
 if os.path.exists('env.py'):
     import env
 
-# Cloudinary storage settings
-CLOUDINARY_STORAGE = {
-    'CLOUDINARY_URL': os.environ.get('CLOUDINARY_URL')
-}
-
-# MEDIA_URL = '/media/'
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
 # Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Local file storage settings
+MEDIA_URL = '/images/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'images')
 
 # Security settings
 SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -45,8 +41,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'dj_rest_auth',
     'dj_rest_auth.registration',
-    'cloudinary_storage',
-    'cloudinary',
     'django_filters',
     'rest_framework',
     'rest_framework.authtoken',
@@ -57,7 +51,6 @@ INSTALLED_APPS = [
     'photographers',
 ]
 
-cloudinary.config(secure=True)
 
 SITE_ID = 1
 
@@ -195,8 +188,6 @@ USE_TZ = True
 
 # Static files configuration
 STATIC_URL = '/static/'
-STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticCloudinaryStorage'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

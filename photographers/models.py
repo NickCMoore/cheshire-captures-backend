@@ -2,7 +2,6 @@ from django.db import models
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.contrib.auth.models import User
-from cloudinary.models import CloudinaryField  
 
 class Photographer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -13,8 +12,14 @@ class Photographer(models.Model):
     follower_count = models.PositiveIntegerField(default=0)
     total_likes = models.PositiveIntegerField(default=0)
 
-    profile_image = CloudinaryField('image', default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1727862662/vestrahorn-mountains-stokksnes-iceland_aoqbtp.jpg')
-    cover_image = CloudinaryField('image', default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1727862662/vestrahorn-mountains-stokksnes-iceland_aoqbtp.jpg')
+    profile_image = models.ImageField(
+        upload_to='images/', 
+        default='images/default_profile_image.jpg'
+    )
+    cover_image = models.ImageField(
+        upload_to='cover_images/', 
+        default='cover_images/default_cover_image.jpg'
+    )
 
     location = models.CharField(max_length=255, blank=True)
     website = models.URLField(max_length=255, blank=True)

@@ -1,6 +1,5 @@
 from django.db import models
 from django.conf import settings
-from cloudinary.models import CloudinaryField
 
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -17,7 +16,9 @@ class Photo(models.Model):
     )
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    image = CloudinaryField('image')
+
+    image = models.ImageField(upload_to='images/', default='images/default_photo.jpg')
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     category = models.CharField(max_length=100, blank=True)
@@ -44,18 +45,14 @@ class Like(models.Model):
     def __str__(self):
         return f"{self.user.username} likes {self.photo.title}"
 
-
-from django.db import models
-from django.conf import settings
-
 class Comment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments')
     photo = models.ForeignKey('Photo', on_delete=models.CASCADE, related_name='comments')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    is_edited = models.BooleanField(default=False) 
-    
+    is_edited = models.BooleanField(default=False)
+
     class Meta:
         ordering = ['-created_at']
         constraints = [
@@ -64,8 +61,6 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.user.username} on {self.photo.title}"
-
-
 
 class PhotoRating(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='ratings')
