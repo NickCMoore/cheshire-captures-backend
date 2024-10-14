@@ -56,9 +56,6 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['-created_at']
-        constraints = [
-            models.UniqueConstraint(fields=['user', 'photo', 'content'], name='unique_user_photo_content')
-        ]
 
     def __str__(self):
         return f"Comment by {self.user.username} on {self.photo.title}"
