@@ -14,11 +14,11 @@ class Photographer(models.Model):
 
     profile_image = models.ImageField(
         upload_to='images/', 
-        default='images/race.jpg'
+        default='images/raceday.jpg'
     )
     cover_image = models.ImageField(
         upload_to='cover_images/', 
-        default='cover_images/northumberland.jpg'
+        default='cover_images/northumberlandcastle.jpg'
     )
 
     location = models.CharField(max_length=255, blank=True)
