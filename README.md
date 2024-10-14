@@ -16,14 +16,6 @@
     + [Ratings and Reviews](#ratings-and-reviews)
 - [Database Design](#database-design)
   * [Models](#models)
-- [Features](#features)
-  * [Homepage](#homepage)
-  * [Profile Data](#profile-data)
-  * [Photos Data](#photos-data)
-  * [Comments Data](#comments-data)
-  * [Likes Data](#likes-data)
-  * [Followers Data](#followers-data)
-  * [Ratings and Reviews Data](#ratings-and-reviews-data)
 - [Agile Workflow](#agile-workflow)
   * [Github Project Board](#github-project-board)
 - [Testing](#testing)
@@ -143,6 +135,10 @@ Users can rate and review photos to provide feedback to photographers. These rat
 
 The project was managed using GitHub’s Kanban board to organize tasks based on user stories and development goals. Each feature was tracked and prioritized using the MoSCoW method.
 
+
+![Project Board](images/project_workflow.png)
+
+
 ![GitHub Project Board](https://github.com/users/NickCMoore/projects/3)
 
 ## Testing
@@ -161,20 +157,255 @@ Please refer to the [Testing Documentation](TESTING.md) for more detailed inform
 - **Gunicorn (v20.1.0)**: A Python WSGI HTTP server used to run the Django application on Heroku in production.
 - **Whitenoise (v6.7.0)**: Ensures efficient serving of static files directly from the Django application in production environments.
 
-## Deployment
+## API Endpoints
 
-The project was deployed on Heroku. Below are the steps to deploy:
+### Authentication
 
-1. Create a new Heroku app.
-2. Connect the Heroku app to your GitHub repository.
-3. Add environment variables such as `DATABASE_URL`, `CLOUDINARY_URL`, and `SECRET_KEY`.
-4. Deploy the app via Heroku’s manual deploy or enable automatic deploys from the `main` branch.
+- **Login**: `POST /dj-rest-auth/login/`
+- **Logout**: `POST /dj-rest-auth/logout/`
+- **Registration**: `POST /dj-rest-auth/registration/`
+- **Resend Registration Email**: `POST /dj-rest-auth/registration/resend-email/`
+- **Verify Registration Email**: `POST /dj-rest-auth/registration/verify-email/`
+- **Password Change**: `POST /dj-rest-auth/password/change/`
+- **Password Reset**: `POST /dj-rest-auth/password/reset/`
+- **Password Reset Confirm**: `POST /dj-rest-auth/password/reset/confirm/`
+- **Token Refresh**: `POST /dj-rest-auth/token/refresh/`
+- **Token Verify**: `POST /dj-rest-auth/token/verify/`
+- **User Details**: `GET /dj-rest-auth/user/`
+- **Update User**: `PUT /dj-rest-auth/user/`
+- **Partial Update User**: `PATCH /dj-rest-auth/user/`
 
-For more detailed instructions, please see the [Deployment Documentation](DEPLOYMENT.md).
+### Photos
+
+- **Get All Photos**: `GET /api/photos/photos/`
+- **Create a Photo**: `POST /api/photos/photos/`
+- **Get My Photos**: `GET /api/photos/photos/my_photos/`
+- **Top-Rated Photos**: `GET /api/photos/photos/top-rated/`
+- **Photo Details**: `GET /api/photos/photos/{id}/`
+- **Edit Photo**: `PUT /api/photos/photos/{id}/`
+- **Partial Update Photo**: `PATCH /api/photos/photos/{id}/`
+- **Delete Photo**: `DELETE /api/photos/photos/{id}/`
+- **Rate Photo**: `POST /api/photos/photos/{id}/rate/`
+- **Get Photo Ratings**: `GET /api/photos/photos/{id}/ratings/`
+- **Like Photo**: `POST /api/photos/photos/{id}/like/`
+- **Unlike Photo**: `POST /api/photos/photos/{id}/unlike/`
+- **Get Photo Comments**: `GET /api/photos/photos/{id}/comments/`
+- **Create Photo Comment**: `POST /api/photos/photos/{id}/comments/`
+- **Get Photo Tags**: `GET /api/photos/tags/`
+- **Create Photo Tag**: `POST /api/photos/tags/`
+
+### Comments
+
+- **Get All Comments**: `GET /api/photos/comments/`
+- **Create a Comment**: `POST /api/photos/comments/`
+- **Delete a Comment**: `DELETE /api/photos/comments/{id}/`
+
+### Follows
+
+- **Get All Follows**: `GET /api/photographers/follows/`
+- **Follow a Photographer**: `POST /api/photographers/follows/`
+- **Unfollow a Photographer**: `POST /api/photographers/follows/{id}/unfollow/`
+
+### Photographers
+
+- **Get All Photographers**: `GET /api/photographers/photographers/`
+- **Photographer Details**: `GET /api/photographers/photographers/{id}/`
+- **Update Photographer**: `PUT /api/photographers/photographers/{id}/`
+- **Partial Update Photographer**: `PATCH /api/photographers/photographers/{id}/`
+- **Follow a Photographer**: `POST /api/photographers/photographers/{id}/follow/`
+- **Unfollow a Photographer**: `DELETE /api/photographers/photographers/{id}/follow/`
+- **Get Photographer's Followers**: `GET /api/photographers/photographers/{id}/followers/`
+- **Top Photographers**: `GET /api/photographers/top-photographers/`
+
+### Messages
+
+- **Get All Messages**: `GET /api/messages/messages/`
+- **Create a Message**: `POST /api/messages/messages/`
+- **Message Details**: `GET /api/messages/messages/{id}/`
+- **Update Message**: `PUT /api/messages/messages/{id}/`
+- **Partial Update Message**: `PATCH /api/messages/messages/{id}/`
+- **Delete Message**: `DELETE /api/messages/messages/{id}/`
+
+
+## Backend Architecture
+
+### Models
+
+- **User**: Includes user information and authentication.
+- **Photographer**: Extends the user model with profile-specific data.
+- **Photo**: Represents uploaded photos, with attributes like title, description, image URL, and ratings.
+- **Comment**: Represents user comments on photos.
+- **Like**: Stores user likes on photos.
+- **Follow**: Manages following relationships between photographers.
+
+### Pagination
+
+- **StandardResultsSetPagination**: Used for paginating results in various endpoints.
+
+### Filtering & Searching
+
+- Utilises `django-filters` for filtering by category, tags, and date ranges.
+- Supports search queries for photo titles, descriptions, and photographers.
+
+### Routing
+
+- Uses `react-router-dom` for routing:
+  - `"/"`: Home page.
+  - `"/signin"`: Sign in page.
+  - `"/signup"`: Registration page.
+  - `"/gallery"`: Displays all photos.
+  - `"/photos/:id"`: Photo details page.
+  - `"/profile/:id"`: User profile page.
+  - `"/profile/:id/edit"`: Edit profile page.
+  - `"/my-photos"`: View and manage photos uploaded by the user.
+  - `"/top-rated"`: Displays top-rated photos.
+  - `"/popular-photographers"`: View popular photographers.
+  - `"/search"`: Search for photos or photographers by keyword.
+  - `"/comments/:photoId"`: View comments for a specific photo.
+  - `"/messages"`: View all messages.
+  - `"/messages/:id"`: View specific message details.
+
+# Deployment Guide
+
+## Deployment to Heroku
+
+Once you have set up a new Gitpod workspace and your project is ready, follow the steps below to deploy your application to Heroku.
+
+### Step 1: Create a New Heroku App
+
+1. Log in to your Heroku account.
+2. On the dashboard, click the **Create New App** button.
+3. Choose a **unique name** for your app that relates to your project.
+4. Select the appropriate **region** based on your location.
+5. Click **Create App** to proceed.
+
+### Step 2: Deploy the Application
+
+1. After creating the app, navigate to the **Deploy** tab in Heroku.
+2. In the **Deployment method** section, choose **GitHub**.
+3. Connect your GitHub account (if not already connected) and find your **project repository**.
+4. Once connected, select the branch you wish to deploy (usually `main` or `master`) and click **Deploy Branch**.
+5. Heroku will now start building your application. Wait for the **build succeeded** message.
+6. After the build is complete, click **Open App** to view your application in the browser.
+
+## Connecting React Frontend to the API Backend
+
+Once the basic deployment is complete, follow these steps to connect your React frontend to your API backend for seamless data exchange.
+
+### Step 1: Set Environment Variables in Heroku
+
+1. In your Heroku dashboard, navigate to your **API application's settings**.
+2. Scroll down to the **Config Vars** section and click **Reveal Config Vars**.
+3. Add the following config variables:
+   - **CLIENT_ORIGIN**: This should be the URL of your deployed React application (e.g., `https://myapp-react.herokuapp.com`).
+   - **CLIENT_ORIGIN_DEV**: This is the URL of your Gitpod workspace (e.g., `https://3000-yourproject.gitpod.io`). Make sure to remove any trailing slashes from the URL.
+
+
+   > **Note:** Gitpod occasionally changes this URL, so make sure to update this config variable as needed during development.
+
+### Step 2: Set Up Axios in React
+
+1. In your React frontend Gitpod workspace, open a terminal and install Axios by running:
+
+```
+npm install axios
+```
+
+2. Create a folder named API and inside it, create a file called axiosDefaults.js.
+
+3. In axiosDefaults.js, set up Axios defaults by importing Axios and configuring the base URL for your API:
+
+```
+import axios from 'axios';
+
+axios.defaults.baseURL = 'https://your-api-backend.herokuapp.com/';
+axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+axios.defaults.withCredentials = true;
+```
+
+Note: Replace 'https://your-api-backend.herokuapp.com/' with the actual URL of your deployed API project.
+
+4. To ensure Axios is set up across your React app, import this file into your main App.js file:
+
+```
+import './API/axiosDefaults';
+```
+
+5. Now, your React frontend is ready to communicate with the API backend for sending and receiving data, including handling images with the correct content type.
+
+## Forking the Project Repository
+
+If you'd like to make an independent copy of the project repository, you can fork it on GitHub. Forking allows you to make changes to the repository without affecting the original.
+
+### Steps to Fork a Repository:
+
+1. Log into your GitHub account and navigate to the repository you want to fork.
+2. In the top-right corner of the repository page, click the **Fork** button.
+3. GitHub will create a copy of the original repository under your account, allowing you to modify it independently.
+4. Once forked, you can make changes to your copy without impacting the original project.
+
+## Cloning the Project Repository
+
+A Git clone creates a local copy of a GitHub repository on your machine that stays linked to the original repository. This allows you to pull updates and push changes as needed.
+
+### Steps to Clone a Repository:
+
+1. On the GitHub repository page, click the **Code** button.
+2. In the dropdown, select **Clone** and choose your preferred method:
+   - **HTTPS**: Copy the HTTPS link to clone the repository.
+   - **SSH**: Use SSH for a secure connection if you have it set up.
+3. Open a terminal and run the following command to clone the repository:
+
+```
+git clone https://github.com/your-username/repository-name.git
+```
+
+Note: Replace your-username and repository-name with your GitHub username and the repository name.
+
+4. After cloning, navigate into the project directory:
+
+```
+cd repository-name
+```
+5. You can now make changes to the project locally. Any updates you make can be pushed back to the repository.
 
 ## Credits
 
-- The project structure was inspired by the **Code Institute DRF** and **Moments Walkthrough** projects.
-- Special thanks to **Unsplash** for providing free, high-quality images for the platform.
-- Thanks to **Cloudinary** for enabling seamless media file storage and hosting.
-- Stack Overflow and other online resources provided valuable support throughout the development process.
+This project would not have been possible without the help of several resources, tools, and inspirations that guided my development process. Below is a detailed list of all the elements that contributed to various aspects of this project.
+
+- The background images used on the **Sign In** and **Sign Up** pages were sourced from [Unsplash](https://unsplash.com), an incredible resource for free, high-quality photography. Special thanks to the photographers who shared their work.
+  
+- For the **Upload Image** icons used in the **Create Photo**, **Edit Photo**, and **Profile Edit** pages, I used [Pngtree](https://pngtree.com), which provided the perfect visual elements for these features. Their extensive library made it easy to find icons that matched the aesthetic of the site.
+
+- The **No Results Found** placeholder image, displayed when a user search returns no results, was customized from a template provided by **Hajde/Media**. It ensures that users have a clear visual cue when there’s no matching content.
+
+- The logo for **Cheshire Captures** was designed using [FreeLogoDesign.org](https://www.freelogodesign.org). I started with their free design templates and tailored them to match the unique identity of the platform.
+
+- To refine the branding, I used [Fotor](https://www.fotor.com) to make the logo’s background transparent, allowing it to integrate seamlessly across different color schemes on the site.
+
+- When implementing the **Delete Confirmation Modal** for managing posts and comments, I consulted an insightful article shared by tutor support. It provided a foundational understanding of modal creation in React, which I then adapted to suit the functionality required in this project.
+
+- After building the initial version of the modal, I found a helpful guide on refactoring components to ensure the **Delete Confirmation Modal** became reusable across different sections of the site, such as the photo deletion and profile management areas.
+
+- For implementing the date-based filtering in the **Gallery** section, I relied on an excellent [Stack Overflow thread](https://stackoverflow.com). This allowed me to dynamically filter photos by their upload date and provide users with real-time sorting options based on the latest content.
+
+- Another [Stack Overflow article](https://stackoverflow.com) helped me address a persistent React console warning about the correct usage of component brackets. This fix improved the performance and code readability of the project, especially when handling the **Top-Rated Photos** component.
+
+- The logic for setting a **dynamic date variable** (used for showing the most recent content) was inspired by a tutorial on [ReactGo.com](https://www.reactgo.com). This tutorial provided a simple yet powerful method to ensure the homepage and profile pages always show up-to-date information.
+
+- To implement the **React Simple Star Rating** feature for user reviews, I referred to documentation from the package itself. However, I also took inspiration from my mentor, who used a similar rating system in a previous project, helping me understand how to customize the component for this platform.
+
+- The official documentation for the **Star Rating System** helped me properly install and customize the component to suit the needs of the platform, ensuring seamless integration for rating photos in the **Photo Detail** view.
+
+- The **Code Institute DRF Walkthrough Project** from Code Institute also provided key guidance on structuring the back-end API for Cheshire Captures. By reviewing how Django Rest Framework was used in the walkthrough, I was able to apply similar strategies for user authentication, photo management, and rating systems.
+
+
+## Acknowledgements
+
+This project was developed as part of **Portfolio Project #5** (Advanced Front-End Specialization) for the **Diploma in Full Stack Software Development** at the **Code Institute**. I am incredibly grateful for the support and guidance of my mentor, **Gareth McGirr**, who provided valuable feedback and insight throughout the development process.
+
+A huge thanks to the **Cheshire Captures** community, whose input inspired many of the user-driven features in this platform. Additionally, I’d like to extend my appreciation to my peers and tutors at the Code Institute for their constant encouragement and willingness to answer questions—especially on the **Slack** channels. Your support helped me overcome numerous challenges during the development process.
+
+Lastly, I want to acknowledge the vast array of online resources and communities—particularly **Unsplash**, **Pngtree**, **Stack Overflow**, and **GitConnected**—for offering the tutorials, tools, and assets that helped bring this project to life.
+
+**[Nick Moore]**, [October] [2024]
