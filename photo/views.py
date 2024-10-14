@@ -196,5 +196,5 @@ class CommentListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         photo_id = self.kwargs.get('pk')
         photo = get_object_or_404(Photo, pk=photo_id)
-        serializer.save(photographer=self.request.user, photo=photo)
+        serializer.save(user=self.request.user, photo=photo)
 
