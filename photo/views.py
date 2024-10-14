@@ -143,19 +143,14 @@ class PhotoLikeView(APIView):
 
         if like_instance:
             like_instance.delete()
-            if photo.likes_count > 0:
-                photo.likes_count -= 1
+            photo.likes_count = photo.likes.count() 
             photo.save()
-            return Response({'status': 'unliked'}, status=status.HTTP_204_NO_CONTENT)
+            return Response({'status': 'unliked', 'likes_count': photo.likes_count}, status=status.HTTP_200_OK)
         else:
-            # Like photo
             Like.objects.create(user=user, photo=photo)
-            photo.likes_count += 1
+            photo.likes_count = photo.likes.count()
             photo.save()
-            return Response({'status': 'liked'}, status=status.HTTP_201_CREATED)
-
-
-
+            return Response({'status': 'liked', 'likes_count': photo.likes_count}, status=status.HTTP_201_CREATED)
 
 # Create and list tags for photos
 class TagListCreateView(generics.ListCreateAPIView):
