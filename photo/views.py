@@ -132,8 +132,25 @@ class PhotoRatingsView(generics.ListAPIView):
         photo = get_object_or_404(Photo, pk=self.kwargs['pk'])
         return PhotoRating.objects.filter(photo=photo)
 
-# Like/Unlike photo view
+# Like photo view
 class PhotoLikeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        photo = get_object_or_404(Photo, pk=pk)
+        user = request.user
+        like_instance, created = Like.objects.get_or_create(user=user, photo=photo)
+
+        if created:
+            photo.likes_count += 1
+            photo.save()
+            return Response({'status': 'liked', 'likes_count': photo.likes_count}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'detail': 'You have already liked this photo.'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Unlike view
+class PhotoUnlikeView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
@@ -143,14 +160,11 @@ class PhotoLikeView(APIView):
 
         if like_instance:
             like_instance.delete()
-            photo.likes_count = photo.likes.count() 
+            photo.likes_count -= 1
             photo.save()
-            return Response({'status': 'unliked', 'likes_count': photo.likes_count}, status=status.HTTP_200_OK)
+            return Response({'status': 'unliked', 'likes_count': photo.likes_count}, status=status.HTTP_204_NO_CONTENT)
         else:
-            Like.objects.create(user=user, photo=photo)
-            photo.likes_count = photo.likes.count()
-            photo.save()
-            return Response({'status': 'liked', 'likes_count': photo.likes_count}, status=status.HTTP_201_CREATED)
+            return Response({'detail': 'You have not liked this photo yet.'}, status=status.HTTP_400_BAD_REQUEST)
 
 # Create and list tags for photos
 class TagListCreateView(generics.ListCreateAPIView):

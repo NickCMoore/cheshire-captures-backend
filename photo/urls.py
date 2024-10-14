@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
     PhotoListCreateView, PhotoDetailView, MyPhotosListView, TopRatedPhotosView,
-    rate_photo, PhotoRatingsView, TagListCreateView, LikeListCreateView, CommentListCreateView, PhotoLikeView
+    rate_photo, PhotoRatingsView, TagListCreateView, LikeListCreateView, CommentListCreateView, PhotoLikeView, PhotoUnlikeView,
 )
 
 urlpatterns = [
@@ -15,4 +15,5 @@ urlpatterns = [
     path('photos/<int:pk>/comments/', CommentListCreateView.as_view(), name='photo-comments'),  
     path('likes/', LikeListCreateView.as_view(), name='like-list'),
     path('photos/<int:pk>/like/', PhotoLikeView.as_view(), name='photo-like'),
+    path('photos/<int:pk>/unlike/', PhotoUnlikeView.as_view(), name='photo-unlike'),
 ]
