@@ -18,7 +18,7 @@ class Photo(models.Model):
     description = models.TextField(blank=True)
 
     image = models.ImageField(upload_to='images/', default='images/raceday.jpg')
-
+    likes_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     category = models.CharField(max_length=100, blank=True)
@@ -34,7 +34,7 @@ class Photo(models.Model):
 
 class Like(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='likes')
-    photo = models.ForeignKey(Photo, on_delete=models.CASCADE, related_name='likes')
+    photo = models.ForeignKey('Photo', on_delete=models.CASCADE, related_name='likes')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -44,6 +44,7 @@ class Like(models.Model):
 
     def __str__(self):
         return f"{self.user.username} likes {self.photo.title}"
+
 
 class Comment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments')

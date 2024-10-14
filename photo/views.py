@@ -135,23 +135,25 @@ class PhotoRatingsView(generics.ListAPIView):
 # Like/Unlike photo view
 class PhotoLikeView(APIView):
     permission_classes = [IsAuthenticated]
-
+    
     def post(self, request, pk):
         photo = get_object_or_404(Photo, pk=pk)
         user = request.user
-
         like_instance = Like.objects.filter(user=user, photo=photo).first()
 
         if like_instance:
+            # Unlike photo
             like_instance.delete()
             photo.likes_count -= 1
             photo.save()
             return Response({'status': 'unliked'}, status=status.HTTP_204_NO_CONTENT)
         else:
+            # Like photo
             Like.objects.create(user=user, photo=photo)
             photo.likes_count += 1
             photo.save()
             return Response({'status': 'liked'}, status=status.HTTP_201_CREATED)
+
 
 
 # Create and list tags for photos
