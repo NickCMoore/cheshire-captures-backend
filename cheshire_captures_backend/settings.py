@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary.storage'
+    'cloudinary_storage',
     'django.contrib.staticfiles',
     'cloudinary',
     'django.contrib.sites',
@@ -125,7 +125,7 @@ if 'CLIENT_ORIGIN_DEV' in os.environ:
 
 CORS_ALLOW_CREDENTIALS = True
 
-DEBUG = True
+DEBUG = False
 
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = [
