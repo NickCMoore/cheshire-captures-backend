@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 class PhotographerList(generics.ListAPIView):
     queryset = Photographer.objects.filter(user__isnull=False) \
                                    .annotate(total_followers=Count('followers')) \
-                                   .order_by('-total_followers')  # Use total_followers to avoid conflict
+                                   .order_by('-total_followers')
     serializer_class = PhotographerSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
@@ -24,10 +24,9 @@ class PhotographerDetail(generics.RetrieveUpdateAPIView):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', True)  # Support partial updates
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer = self.get_serializer(instance, data=request.data, partial=partial, context={'request': request})
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
-
         return Response(serializer.data)
 
 # API to follow or unfollow a photographer
@@ -36,7 +35,12 @@ class FollowPhotographerView(APIView):
 
     def post(self, request, pk):
         photographer = get_object_or_404(Photographer, pk=pk)
-        follower = request.user.photographer  # Ensure the user has a photographer profile
+        
+        # Check if user has a photographer profile
+        try:
+            follower = request.user.photographer  
+        except Photographer.DoesNotExist:
+            return Response({'detail': 'You do not have a photographer profile.'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Check if already following
         if Follow.objects.filter(follower=follower, following=photographer).exists():
@@ -49,7 +53,12 @@ class FollowPhotographerView(APIView):
 
     def delete(self, request, pk):
         photographer = get_object_or_404(Photographer, pk=pk)
-        follower = request.user.photographer  # Ensure the user has a photographer profile
+
+        # Check if user has a photographer profile
+        try:
+            follower = request.user.photographer  
+        except Photographer.DoesNotExist:
+            return Response({'detail': 'You do not have a photographer profile.'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Check if not following
         follow_instance = Follow.objects.filter(follower=follower, following=photographer).first()

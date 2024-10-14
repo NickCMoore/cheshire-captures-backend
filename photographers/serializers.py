@@ -13,16 +13,6 @@ class PhotographerSerializer(serializers.ModelSerializer):
             return request.user == obj.user
         return False
 
-    def get_profile_image(self, obj):
-        if obj.profile_image:
-            return obj.profile_image.url
-        return None
-
-    def get_cover_image(self, obj):
-        if obj.cover_image:
-            return obj.cover_image.url
-        return None
-
     class Meta:
         model = Photographer
         fields = [
@@ -32,15 +22,7 @@ class PhotographerSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'user', 'created_at', 'updated_at']
 
-    class Meta:
-        model = Photographer
-        fields = [
-            'id', 'user', 'display_name', 'bio', 'profile_image', 
-            'location', 'cover_image', 'website', 'instagram', 
-            'twitter', 'created_at', 'updated_at', 'is_user'
-        ]
-        read_only_fields = ['id', 'user', 'created_at', 'updated_at']
-
+    # Validation methods for URLs
     def validate_website(self, value):
         if value and value.strip() and not value.startswith(('http://', 'https://')):
             raise serializers.ValidationError("Website must start with 'http://' or 'https://'.")
@@ -55,6 +37,7 @@ class PhotographerSerializer(serializers.ModelSerializer):
         if value and value.strip() and not value.startswith(('http://', 'https://')):
             raise serializers.ValidationError("Twitter link must start with 'http://' or 'https://'.")
         return value
+
 
 class FollowSerializer(serializers.ModelSerializer):
     class Meta:
