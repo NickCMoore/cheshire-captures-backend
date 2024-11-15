@@ -19,6 +19,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security settings
 SECRET_KEY = os.environ.get('SECRET_KEY')
+if not SECRET_KEY:
+    raise RuntimeError("SECRET_KEY is not set in env.py or environment variables.")
+
 
 ALLOWED_HOSTS = [
     os.environ.get('CLIENT_ORIGIN_DEV', ''),
