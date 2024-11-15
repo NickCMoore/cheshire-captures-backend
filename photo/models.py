@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from cloudinary.models import CloudinaryField
 
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -16,8 +17,10 @@ class Photo(models.Model):
     )
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-
-    image = models.ImageField(upload_to='images/', default='images/mountains')
+    image = CloudinaryField(
+        'image', 
+        default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1727862662/vestrahorn-mountains-stokksnes-iceland_aoqbtp.jpg'
+    )
     likes_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
