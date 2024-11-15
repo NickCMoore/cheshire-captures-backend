@@ -15,7 +15,6 @@ class PhotographerList(generics.ListAPIView):
     serializer_class = PhotographerSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-# Retrieve or update photographer details with partial update support
 class PhotographerDetail(generics.RetrieveUpdateAPIView):
     queryset = Photographer.objects.all()
     serializer_class = PhotographerSerializer
@@ -24,10 +23,19 @@ class PhotographerDetail(generics.RetrieveUpdateAPIView):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', True)  # Support partial updates
         instance = self.get_object()
+
+        # Check if the current user owns the profile
+        if instance.user != request.user:
+            return Response(
+                {"detail": "You are not authorised to edit this profile."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
         serializer = self.get_serializer(instance, data=request.data, partial=partial, context={'request': request})
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)
+
 
 # API to follow or unfollow a photographer
 class FollowPhotographerView(APIView):
