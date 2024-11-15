@@ -109,18 +109,19 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',
-    'https://3000-nickcmoore-cheshirecapt-hbw1s77xkey.ws-eu116.gitpod.io',  
+    'http://localhost:3000',
+    'https://3000-nickcmoore-cheshirecapt-hbw1s77xkey.ws-eu116.gitpod.io',
 ]
 
-# CORS settings
 if 'CLIENT_ORIGIN' in os.environ:
-    CORS_ALLOWED_ORIGINS = [
-        os.environ.get('CLIENT_ORIGIN') 
-    ]
+    CORS_ALLOWED_ORIGINS.append(os.environ.get('CLIENT_ORIGIN'))
+
 if 'CLIENT_ORIGIN_DEV' in os.environ:
-    CORS_ALLOWED_ORIGIN_REGEXES = [ 
-        os.environ.get('CLIENT_ORIGIN_DEV', ''),
-    ]
+    CORS_ALLOWED_ORIGINS.append(os.environ.get('CLIENT_ORIGIN_DEV'))
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://\d{4}-nickcmoore-cheshirecapt-[a-z0-9]+\.ws-eu116\.gitpod\.io$",
+]
 
 CORS_ALLOW_CREDENTIALS = True
 
