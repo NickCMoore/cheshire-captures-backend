@@ -23,11 +23,11 @@ class PhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photo
         fields = [
-            'id', 'photographer', 'title', 'description', 'image_url',
+            'id', 'photographer', 'title', 'description', 'image', 'image_url',
             'category', 'tags', 'created_at', 'updated_at',
             'average_rating', 'user_rating'
         ]
-        read_only_fields = ['created_at', 'updated_at']
+        read_only_fields = ['created_at', 'updated_at', 'image_url']
 
     def get_user_rating(self, obj):
         request = self.context.get('request')
@@ -35,6 +35,25 @@ class PhotoSerializer(serializers.ModelSerializer):
             rating = PhotoRating.objects.filter(photo=obj, user=request.user).first()
             return rating.rating if rating else None
         return None
+
+    def validate_image(self, value):
+        """
+        Validate the uploaded image file for Cloudinary compatibility.
+        """
+        valid_image_extensions = ['jpg', 'jpeg', 'png', 'gif']
+        file_extension = value.name.split('.')[-1].lower()
+        if file_extension not in valid_image_extensions:
+            raise serializers.ValidationError(
+                "Invalid file format. Please upload a valid image file (JPEG, PNG, or GIF)."
+            )
+
+        max_file_size = 10 * 1024 * 1024  # 10MB
+        if value.size > max_file_size:
+            raise serializers.ValidationError(
+                "The file size exceeds the 10MB limit. Please upload a smaller file."
+            )
+
+        return value
 
 class LikeSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')  
@@ -46,6 +65,7 @@ class LikeSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')  
     photo = serializers.PrimaryKeyRelatedField(queryset=Photo.objects.all())  
+
     class Meta:
         model = Comment
         fields = ['id', 'photo', 'user', 'content', 'created_at', 'updated_at'] 

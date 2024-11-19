@@ -17,10 +17,18 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Security settings
+if os.path.exists('env.py'):
+    import env
+    print("env.py loaded successfully")
+else:
+    print("env.py not found")
+
 SECRET_KEY = os.environ.get('SECRET_KEY')
+print(f"SECRET_KEY: {SECRET_KEY}")  # This will display the SECRET_KEY value
+
 if not SECRET_KEY:
     raise RuntimeError("SECRET_KEY is not set in env.py or environment variables.")
+
 
 
 ALLOWED_HOSTS = [
