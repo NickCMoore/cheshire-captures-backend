@@ -198,3 +198,14 @@ class CommentListCreateView(generics.ListCreateAPIView):
         photo = get_object_or_404(Photo, pk=photo_id)
         serializer.save(user=self.request.user, photo=photo)
 
+class CommentDetailView(generics.DestroyAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request, *args, **kwargs):
+        comment = self.get_object()
+        if comment.user != request.user and not request.user.is_staff:
+            return Response({"error": "You are not allowed to delete this comment."}, status=403)
+        return super().delete(request, *args, **kwargs)
+
