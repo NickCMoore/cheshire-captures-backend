@@ -148,7 +148,6 @@ class PhotoLikeView(APIView):
         else:
             return Response({'detail': 'You have already liked this photo.'}, status=status.HTTP_400_BAD_REQUEST)
 
-
 # Unlike view
 class PhotoUnlikeView(APIView):
     permission_classes = [IsAuthenticated]

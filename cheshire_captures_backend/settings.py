@@ -1,21 +1,29 @@
 from pathlib import Path
 import os
-import re
 import dj_database_url
 from datetime import timedelta
-
 
 # Import environment variables if present
 if os.path.exists('env.py'):
     import env
 
+# Define the base directory
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Cloudinary storage configuration
 CLOUDINARY_STORAGE = {
     'CLOUDINARY_URL': os.environ.get('CLOUDINARY_URL')
 }
-MEDIA_URL = '/media/'
+
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticCloudinaryStorage'
+
+# Static and media configuration
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+
+STATICFILES_DIRS = [BASE_DIR / 'static'] 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 if os.path.exists('env.py'):
     import env
@@ -24,12 +32,9 @@ else:
     print("env.py not found")
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
-print(f"SECRET_KEY: {SECRET_KEY}")  # This will display the SECRET_KEY value
 
 if not SECRET_KEY:
     raise RuntimeError("SECRET_KEY is not set in env.py or environment variables.")
-
-
 
 ALLOWED_HOSTS = [
     os.environ.get('CLIENT_ORIGIN_DEV', ''),
@@ -64,7 +69,6 @@ INSTALLED_APPS = [
     'photo',
     'photographers',
 ]
-
 
 SITE_ID = 1
 
@@ -200,9 +204,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
-
-# Static files configuration
-STATIC_URL = '/static/'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
