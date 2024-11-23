@@ -21,27 +21,21 @@ STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticCloudinaryStorage'
 # Static and media configuration
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
-
-STATICFILES_DIRS = [BASE_DIR / 'static'] 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-if os.path.exists('env.py'):
-    import env
-    print("env.py loaded successfully")
-else:
-    print("env.py not found")
-
+# Secret Key
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 if not SECRET_KEY:
     raise RuntimeError("SECRET_KEY is not set in env.py or environment variables.")
 
+# Allowed Hosts
 ALLOWED_HOSTS = [
     os.environ.get('CLIENT_ORIGIN_DEV', ''),
     'cheshire-captures-backend-084aac6d9023.herokuapp.com',
     '127.0.0.1',
     'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',
-    '8000-nickcmoore-cheshirecapt-1t388js0qvn.ws-eu116.gitpod.io'
+    'localhost',
 ]
 
 # Application definition
@@ -122,10 +116,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# CORS and CSRF configuration
 CORS_ALLOWED_ORIGINS = [
     'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',
     'http://localhost:3000',
-    'https://3000-nickcmoore-cheshirecapt-hbw1s77xkey.ws-eu116.gitpod.io',
 ]
 
 if 'CLIENT_ORIGIN' in os.environ:
@@ -134,20 +128,15 @@ if 'CLIENT_ORIGIN' in os.environ:
 if 'CLIENT_ORIGIN_DEV' in os.environ:
     CORS_ALLOWED_ORIGINS.append(os.environ.get('CLIENT_ORIGIN_DEV'))
 
-CORS_ALLOWED_ORIGIN_REGEXES = [
-    r"^https://\d{4}-nickcmoore-cheshirecapt-[a-z0-9]+\.ws-eu116\.gitpod\.io$",
-]
-
 CORS_ALLOW_CREDENTIALS = True
 
-DEBUG = False
-
-# CSRF settings
 CSRF_TRUSTED_ORIGINS = [
     'https://cheshire-captures-backend-084aac6d9023.herokuapp.com',
     'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',
-    'https://8000-nickcmoore-cheshirecapt-1t388js0qvn.ws-eu116.gitpod.io',
+    'http://localhost:3000',
 ]
+
+DEBUG = False
 
 # URL configuration
 ROOT_URLCONF = 'cheshire_captures_backend.urls'
