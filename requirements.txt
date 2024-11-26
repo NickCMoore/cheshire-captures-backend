@@ -1,7 +1,7 @@
 asgiref==3.8.1
 cloudinary==1.41.0
 dj-database-url==2.2.0
-dj-rest-auth==2.1.11
+dj-rest-auth==2.1.9
 Django==4.2.7
 django-allauth==0.50.0
 django-cloudinary-storage==0.3.0
@@ -22,7 +22,6 @@ PyJWT==2.7.0
 python3-openid==3.2.0
 pytz==2024.2
 requests-oauthlib==2.0.0
-setuptools==75.1.0
 sqlparse==0.5.1
 uritemplate==4.1.1
 whitenoise==6.7.0
