@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Secret Key and Debug
 SECRET_KEY = os.environ.get('SECRET_KEY')
-DEBUG = True
+DEBUG = False
 
 if not SECRET_KEY:
     raise RuntimeError("SECRET_KEY is not set in environment variables.")
@@ -79,13 +79,7 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'cheshire_captures_backend.utils.custom_exception_handler',
 }
 
-# Dynamically manage renderer classes
-if DEBUG:
-    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = [
-        'rest_framework.renderers.BrowsableAPIRenderer',
-        'rest_framework.renderers.JSONRenderer',
-    ]
-else:
+if 'DEV' not in os.environ:
     REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = [
         'rest_framework.renderers.JSONRenderer',
     ]
