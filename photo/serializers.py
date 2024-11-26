@@ -64,7 +64,10 @@ class LikeSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')  
-    photo = serializers.PrimaryKeyRelatedField(queryset=Photo.objects.all())  
+    photo = serializers.SlugRelatedField(
+    slug_field='id',
+    queryset=Photo.objects.all()
+)
 
     class Meta:
         model = Comment

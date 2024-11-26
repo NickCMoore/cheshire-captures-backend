@@ -1,6 +1,7 @@
 from rest_framework import generics, permissions, filters, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -12,6 +13,7 @@ from .serializers import PhotoSerializer, TagSerializer, LikeSerializer, Comment
 from .filters import PhotoFilter
 from django.shortcuts import get_object_or_404
 from datetime import datetime
+from django.middleware.csrf import get_token
 
 # Pagination for photos
 class PhotoPagination(PageNumberPagination):
@@ -196,8 +198,6 @@ class CommentListCreateView(generics.ListCreateAPIView):
         photo_id = self.kwargs.get('pk')
         photo = get_object_or_404(Photo, pk=photo_id)
         serializer.save(user=self.request.user, photo=photo)
-
-from rest_framework.generics import RetrieveUpdateDestroyAPIView
 
 class CommentDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()

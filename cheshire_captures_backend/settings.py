@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Secret Key and Debug
 SECRET_KEY = os.environ.get('SECRET_KEY')
-DEBUG = False
+DEBUG = True
 
 if not SECRET_KEY:
     raise RuntimeError("SECRET_KEY is not set in environment variables.")
@@ -72,6 +72,7 @@ SITE_ID = 1
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
@@ -83,6 +84,7 @@ if 'DEV' not in os.environ:
     REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = [
         'rest_framework.renderers.JSONRenderer',
     ]
+
 
 # JWT settings
 REST_USE_JWT = True
@@ -126,6 +128,8 @@ CSRF_TRUSTED_ORIGINS = [
     'https://cheshire-captures-backend-084aac6d9023.herokuapp.com',
     'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',
     'http://localhost:3000',
+    'https://8000-nickcmoore-cheshirecapt-i1catxh7zvz.ws-eu116.gitpod.io',
+    'https://3000-nickcmoore-cheshirecapt-yseoh6tk0ts.ws-eu116.gitpod.io',
 ]
 CORS_ALLOW_CREDENTIALS = True
 
