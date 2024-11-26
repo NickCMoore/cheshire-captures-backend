@@ -138,7 +138,6 @@ CORS_ALLOW_CREDENTIALS = True
 DATABASES = {
     'default': dj_database_url.config(default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}")
 }
-
 # Logging configuration
 LOGGING = {
     'version': 1,
