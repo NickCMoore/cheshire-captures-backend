@@ -33,11 +33,11 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Allowed Hosts
 ALLOWED_HOSTS = [
-    os.environ.get('CLIENT_ORIGIN_DEV', ''),
-    'cheshire-captures-backend-084aac6d9023.herokuapp.com',
-    '127.0.0.1',
-    'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',
-    'localhost',
+    "localhost",
+    "127.0.0.1",
+    "cheshire-captures-backend-084aac6d9023.herokuapp.com",
+    "cheshire-captures-4a500dc7ab0a.herokuapp.com",
+    "8000-nickcmoore-cheshirecapt-i1catxh7zvz.ws-eu116.gitpod.io",
 ]
 
 # Application definition
