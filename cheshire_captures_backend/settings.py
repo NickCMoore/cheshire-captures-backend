@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Secret Key and Debug
 SECRET_KEY = os.environ.get('SECRET_KEY')
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = True
 
 if not SECRET_KEY:
     raise RuntimeError("SECRET_KEY is not set in environment variables.")
