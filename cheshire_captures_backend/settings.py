@@ -126,6 +126,7 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',
     'http://localhost:3000',
+    'https://8000-nickcmoore-cheshirecapt-i1catxh7zvz.ws-eu116.gitpod.io',
 ]
 CSRF_TRUSTED_ORIGINS = [
     'https://cheshire-captures-backend-084aac6d9023.herokuapp.com',
