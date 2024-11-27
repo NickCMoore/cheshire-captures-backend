@@ -48,6 +48,8 @@ class PhotoDetailView(generics.RetrieveUpdateDestroyAPIView):
         return super().delete(request, *args, **kwargs)
 
 # View for listing the user's own photos, with date filtering
+from django.utils.timezone import make_aware
+
 class MyPhotosListView(generics.ListAPIView):
     serializer_class = PhotoSerializer
     permission_classes = [IsAuthenticated]
@@ -62,29 +64,20 @@ class MyPhotosListView(generics.ListAPIView):
 
         if start_date:
             try:
-                parsed_start_date = parse_date(start_date)
-                if parsed_start_date:
-                    start_date_with_time = datetime.combine(parsed_start_date, datetime.min.time())
-                    queryset = queryset.filter(created_at__gte=start_date_with_time)
-                else:
-                    print(f"Error: Invalid start_date {start_date}")
-            except ValueError as e:
-                print(f"Error parsing start_date: {e}")
+                start_date_with_time = make_aware(datetime.strptime(start_date, "%Y-%m-%d"))
+                queryset = queryset.filter(created_at__gte=start_date_with_time)
+            except ValueError:
+                pass 
 
         if end_date:
             try:
-                parsed_end_date = parse_date(end_date)
-                if parsed_end_date:
-                    end_date_with_time = datetime.combine(parsed_end_date, datetime.max.time())
-                    queryset = queryset.filter(created_at__lte=end_date_with_time)
-                else:
-                    print(f"Error: Invalid end_date {end_date}")
-            except ValueError as e:
-                print(f"Error parsing end_date: {e}")
-
-        print(f"Filtered queryset (count: {queryset.count()}): {queryset}")
+                end_date_with_time = make_aware(datetime.strptime(end_date, "%Y-%m-%d"))
+                queryset = queryset.filter(created_at__lte=end_date_with_time)
+            except ValueError:
+                pass  
 
         return queryset
+
 
 # List the top-rated photos
 class TopRatedPhotosView(generics.ListAPIView):
