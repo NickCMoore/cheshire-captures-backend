@@ -64,14 +64,19 @@ class LikeSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
+    photo = serializers.SlugRelatedField(
+        slug_field='id',
+        queryset=Photo.objects.all(),
+        required=False  # Make it optional
+    )
 
     class Meta:
         model = Comment
-        fields = ['id', 'photo', 'user', 'content', 'created_at', 'updated_at'] 
+        fields = ['id', 'photo', 'user', 'content', 'created_at', 'updated_at']
 
-    def create(self, validated_data):
-        user = self.context['request'].user
-        photo = validated_data['photo'] 
-        content = validated_data['content'] 
-        
-        return Comment.objects.create(user=user, photo=photo, content=content)
+    def update(self, instance, validated_data):
+        # Ignore 'photo' during updates
+        validated_data.pop('photo', None)
+        instance.content = validated_data.get('content', instance.content)
+        instance.save()
+        return instance
