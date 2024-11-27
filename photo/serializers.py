@@ -63,19 +63,23 @@ class LikeSerializer(serializers.ModelSerializer):
         fields = ['id', 'photo', 'user', 'created_at']
 
 class CommentSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')  
+    user = serializers.ReadOnlyField(source='user.username')
     photo = serializers.SlugRelatedField(
-    slug_field='id',
-    queryset=Photo.objects.all()
-)
+        slug_field='id',
+        queryset=Photo.objects.all(),
+        required=True
+    )
 
     class Meta:
         model = Comment
-        fields = ['id', 'photo', 'user', 'content', 'created_at', 'updated_at'] 
+        fields = ['id', 'photo', 'user', 'content', 'created_at', 'updated_at']
 
     def create(self, validated_data):
         user = self.context['request'].user
-        photo = validated_data['photo'] 
-        content = validated_data['content'] 
-        
+        photo = validated_data['photo']
+        content = validated_data['content']
         return Comment.objects.create(user=user, photo=photo, content=content)
+
+    def update(self, instance, validated_data):
+        validated_data.pop('photo', None)  
+        return super().update(instance, validated_data)
