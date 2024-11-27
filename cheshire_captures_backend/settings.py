@@ -1,5 +1,5 @@
 from pathlib import Path
-import os
+import os, re
 import dj_database_url
 from datetime import timedelta
 
@@ -39,6 +39,16 @@ ALLOWED_HOSTS = [
     "cheshire-captures-4a500dc7ab0a.herokuapp.com",
     "8000-nickcmoore-cheshirecapt-i1catxh7zvz.ws-eu116.gitpod.io",
 ]
+
+if "CLIENT_ORIGIN" in os.environ:
+    CORS_ALLOWED_ORIGINS = [os.environ.get("CLIENT_ORIGIN")]
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://.*\.codeinstitute-ide\.net$",
+    r"^https://.*\.gitpod\.io$"
+]
+
+CORS_ALLOW_CREDENTIALS = True
 
 # Application definition
 INSTALLED_APPS = [
@@ -118,12 +128,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# CORS and CSRF configuration
-CORS_ALLOWED_ORIGINS = [
-    'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',
-    'http://localhost:3000',
-    'https://3000-nickcmoore-cheshirecapt-yseoh6tk0ts.ws-eu116.gitpod.io',
-]
+# CSRF configuration
 CSRF_TRUSTED_ORIGINS = [
     'https://cheshire-captures-backend-084aac6d9023.herokuapp.com',
     'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',
@@ -131,7 +136,6 @@ CSRF_TRUSTED_ORIGINS = [
     'https://8000-nickcmoore-cheshirecapt-i1catxh7zvz.ws-eu116.gitpod.io',
     'https://3000-nickcmoore-cheshirecapt-yseoh6tk0ts.ws-eu116.gitpod.io',
 ]
-CORS_ALLOW_CREDENTIALS = True
 
 # Database configuration
 DATABASES = {
