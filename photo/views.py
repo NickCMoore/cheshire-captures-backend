@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.db.models import F
 from django.utils.timezone import make_aware
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, permissions, filters, status
@@ -105,39 +106,30 @@ def rate_photo(request, pk):
     photo = get_object_or_404(Photo, pk=pk)
     rating_value = request.data.get('rating')
 
-    if rating_value is not None:
-        try:
-            rating_value = int(rating_value)
-            if 1 <= rating_value <= 5:
-                user_rating, created = PhotoRating.objects.get_or_create(
-                    user=request.user, photo=photo
-                )
-                if not created:
-                    old_rating = user_rating.rating
-                    user_rating.rating = rating_value
-                    user_rating.save()
-                    total_rating = (photo.rating * photo.rating_count) - old_rating + rating_value
-                else:
-                    total_rating = (photo.rating * photo.rating_count) + rating_value
-                    photo.rating_count += 1
-                photo.rating = total_rating / photo.rating_count
-                photo.save()
-                return Response(
-                    {'detail': 'Rating added or updated successfully!'},
-                    status=status.HTTP_200_OK,
-                )
-            else:
-                return Response(
-                    {'detail': 'Rating should be between 1 and 5.'},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        except ValueError:
-            return Response(
-                {'detail': 'Invalid rating value.'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+    try:
+        rating_value = int(rating_value)
+        if not (1 <= rating_value <= 5):
+            return Response({'detail': 'Rating must be between 1 and 5.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    return Response({'detail': 'Rating not provided.'}, status=status.HTTP_400_BAD_REQUEST)
+        user_rating, created = PhotoRating.objects.get_or_create(user=request.user, photo=photo)
+        if not created:
+            # Update existing rating
+            old_rating = user_rating.rating
+            user_rating.rating = rating_value
+            user_rating.save()
+            photo.rating_count = F('rating_count')
+            photo.rating = (F('rating') * F('rating_count') - old_rating + rating_value) / F('rating_count')
+        else:
+            # Add new rating
+            user_rating.rating = rating_value
+            user_rating.save()
+            photo.rating_count = F('rating_count') + 1
+            photo.rating = (F('rating') * (F('rating_count') - 1) + rating_value) / F('rating_count')
+
+        photo.save()
+        return Response({'detail': 'Rating added or updated successfully!'}, status=status.HTTP_200_OK)
+    except ValueError:
+        return Response({'detail': 'Invalid rating value.'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 # Retrieve all ratings for a specific photo
