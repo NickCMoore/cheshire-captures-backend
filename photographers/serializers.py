@@ -1,13 +1,11 @@
 from rest_framework import serializers
 from .models import Photographer, Follow
-from photo.serializers import PhotoSerializer
 
 class PhotographerSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(format="%d %b %Y", read_only=True)
     updated_at = serializers.DateTimeField(format="%d %b %Y", read_only=True)
     user = serializers.ReadOnlyField(source='user.username', read_only=True)
     is_user = serializers.SerializerMethodField()
-    photos = PhotoSerializer(many=True, read_only=True)
 
     def get_is_user(self, obj):
         request = self.context.get('request', None)
