@@ -20,7 +20,7 @@ class PhotographerList(generics.ListAPIView):
 
 
 class PhotographerDetail(generics.RetrieveUpdateAPIView):
-    queryset = Photographer.objects.prefetch_related('photos')
+    queryset = Photographer.objects.all()
     serializer_class = PhotographerSerializer
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly

@@ -4,7 +4,7 @@ from .models import Photographer, Follow
 class PhotographerSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(format="%d %b %Y", read_only=True)
     updated_at = serializers.DateTimeField(format="%d %b %Y", read_only=True)
-    user = serializers.ReadOnlyField(source='user.id', read_only=True)
+    user = serializers.ReadOnlyField(source='user.username', read_only=True)
     is_user = serializers.SerializerMethodField()
 
     def get_is_user(self, obj):
