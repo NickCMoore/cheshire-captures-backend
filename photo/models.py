@@ -13,9 +13,7 @@ class Tag(models.Model):
 
 class Photo(models.Model):
     photographer = models.ForeignKey(
-        'photographers.Photographer',
-        on_delete=models.CASCADE,
-        related_name='photos',
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='photos'
     )
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
