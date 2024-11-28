@@ -331,7 +331,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
-DEFAULT_FROM_EMAIL = 'nick@cheshirecaptures.com' 
+DEFAULT_FROM_EMAIL = 'nick@cheshirecaptures.com'
 
 # Set redirection URL after email confirmation
 ACCOUNT_CONFIRMATION_REDIRECT_URL = 'https://cheshire-captures-4a500dc7ab0a.herokuapp.com/signin'  # Adjust for your frontend URL
