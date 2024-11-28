@@ -4,6 +4,9 @@ import re
 import dj_database_url
 
 
+if os.path.exists('env.py'):
+    import env
+
 CLOUDINARY_STORAGE = {
     'CLOUDINARY_URL': os.environ.get('CLOUDINARY_URL')
 }
