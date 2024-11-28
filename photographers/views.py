@@ -20,9 +20,8 @@ class PhotographerList(generics.ListAPIView):
 
 
 class PhotographerDetail(generics.RetrieveUpdateAPIView):
-    queryset = Photographer.objects.all()
+    queryset = Photographer.objects.prefetch_related('photos')
     serializer_class = PhotographerSerializer
-    # Apply permissions
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly
     ]
@@ -43,6 +42,7 @@ class PhotographerDetail(generics.RetrieveUpdateAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)
+
 
 # API to follow or unfollow a photographer
 
