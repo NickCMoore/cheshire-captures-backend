@@ -37,6 +37,7 @@ class Photographer(models.Model):
 @receiver(post_save, sender=User)
 def create_photographer(sender, instance, created, **kwargs):
     if created:
+        print(f"Signal triggered for user: {instance.username}")
         Photographer.objects.create(user=instance)
 
 

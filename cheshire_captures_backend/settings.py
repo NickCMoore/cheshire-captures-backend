@@ -39,6 +39,7 @@ JWT_AUTH_SAMESITE = 'None'
 
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'cheshire_captures_backend.serializers.CurrentUserSerializer',
+    'TOKEN_SERIALIZER': 'cheshire_captures_backend.serializers.CustomTokenSerializer',
 }
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
