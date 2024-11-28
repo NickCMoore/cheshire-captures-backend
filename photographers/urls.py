@@ -9,4 +9,3 @@ urlpatterns = [
     path('top-photographers/', TopPhotographersView.as_view(), name='top-photographers'),
     path('photographers/<int:pk>/followers/', PhotographerFollowersAPIView.as_view(), name='photographer-followers'),
 ]
-

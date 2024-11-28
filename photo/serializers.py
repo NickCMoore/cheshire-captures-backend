@@ -56,7 +56,7 @@ class PhotoSerializer(serializers.ModelSerializer):
         return value
 
 class LikeSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')  
+    user = serializers.ReadOnlyField(source='user.username')
 
     class Meta:
         model = Like

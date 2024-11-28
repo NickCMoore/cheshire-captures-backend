@@ -26,15 +26,15 @@ urlpatterns = [
     path('admin/', admin.site.urls),  # Django admin
 
     # REST framework authentication
-    path('api-auth/', include('rest_framework.urls')), 
+    path('api-auth/', include('rest_framework.urls')),
 
     # Logout route for dj-rest-auth
     path('dj-rest-auth/logout/', logout_route),
 
     # dj-rest-auth endpoints including JWT refresh
-    path('dj-rest-auth/', include('dj_rest_auth.urls')), 
-    path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')), 
-    path('dj-rest-auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), 
+    path('dj-rest-auth/', include('dj_rest_auth.urls')),
+    path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
+    path('dj-rest-auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     # API-specific routes (ensure you have the urls.py in these apps)
     path('api/photographers/', include('photographers.urls')),  # Photographer-related API

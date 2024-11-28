@@ -29,7 +29,7 @@ class PhotoListCreateView(generics.ListCreateAPIView):
     parser_classes = [MultiPartParser, FormParser]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_class = PhotoFilter
-    search_fields = ['title', 'description', 'category', 'photographer__username']  
+    search_fields = ['title', 'description', 'category', 'photographer__username']
     ordering_fields = ['created_at', 'title']
 
     def perform_create(self, serializer):
@@ -67,14 +67,14 @@ class MyPhotosListView(generics.ListAPIView):
                 start_date_with_time = make_aware(datetime.strptime(start_date, "%Y-%m-%d"))
                 queryset = queryset.filter(created_at__gte=start_date_with_time)
             except ValueError:
-                pass 
+                pass
 
         if end_date:
             try:
                 end_date_with_time = make_aware(datetime.strptime(end_date, "%Y-%m-%d"))
                 queryset = queryset.filter(created_at__lte=end_date_with_time)
             except ValueError:
-                pass  
+                pass
 
         return queryset
 

@@ -14,11 +14,11 @@ class Photographer(models.Model):
     total_likes = models.PositiveIntegerField(default=0)
 
     profile_image = models.ImageField(
-        upload_to='images/', 
+        upload_to='images/',
         default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1727862662/vestrahorn-mountains-stokksnes-iceland_aoqbtp.jpg'
     )
     cover_image = models.ImageField(
-        upload_to='cover_images/', 
+        upload_to='cover_images/',
         default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1727862662/vestrahorn-mountains-stokksnes-iceland_aoqbtp.jpg'
     )
 
@@ -33,14 +33,18 @@ class Photographer(models.Model):
     def __str__(self):
         return f"{self.display_name} ({self.user.username})"
 
+
 @receiver(post_save, sender=User)
 def create_photographer(sender, instance, created, **kwargs):
     if created:
         Photographer.objects.create(user=instance)
 
+
 class Follow(models.Model):
-    follower = models.ForeignKey(Photographer, related_name='following', on_delete=models.CASCADE)
-    following = models.ForeignKey(Photographer, related_name='followers', on_delete=models.CASCADE)
+    follower = models.ForeignKey(
+        Photographer, related_name='following', on_delete=models.CASCADE)
+    following = models.ForeignKey(
+        Photographer, related_name='followers', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -49,11 +53,13 @@ class Follow(models.Model):
     def __str__(self):
         return f"{self.follower.user.username} follows {self.following.user.username}"
 
+
 @receiver(post_save, sender=Follow)
 def update_follower_count_on_create(sender, instance, created, **kwargs):
     if created:
         instance.following.follower_count += 1
         instance.following.save()
+
 
 @receiver(post_delete, sender=Follow)
 def update_follower_count_on_delete(sender, instance, **kwargs):

@@ -6,7 +6,6 @@ class PhotoFilter(django_filters.FilterSet):
     photographer = django_filters.CharFilter(field_name='photographer__username', lookup_expr='icontains')  # Correct field reference for username
     category = django_filters.CharFilter(field_name='category', lookup_expr='iexact')
     tags = django_filters.CharFilter(field_name='tags__name', lookup_expr='icontains')
-    
     created_at__gte = django_filters.DateFilter(field_name='created_at', lookup_expr='gte', label='Created At (From)')
     created_at__lte = django_filters.DateFilter(field_name='created_at', lookup_expr='lte', label='Created At (To)')
 
