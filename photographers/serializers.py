@@ -1,6 +1,5 @@
-from rest_framework import serializers
-from .models import Photographer, Follow
-
+from .models import Photographer, Follow, Photo
+from .serializers import PhotoSerializer
 
 class PhotographerSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(
@@ -13,6 +12,7 @@ class PhotographerSerializer(serializers.ModelSerializer):
         source='user.username', read_only=True
     )
     is_user = serializers.SerializerMethodField()
+    photos = PhotoSerializer(many=True, read_only=True)
 
     def get_is_user(self, obj):
         request = self.context.get('request', None)
@@ -25,7 +25,7 @@ class PhotographerSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'user', 'display_name', 'bio', 'profile_image',
             'location', 'cover_image', 'website', 'instagram',
-            'twitter', 'created_at', 'updated_at', 'is_user',
+            'twitter', 'created_at', 'updated_at', 'is_user', 'photos',
         ]
         read_only_fields = [
             'id', 'user', 'created_at', 'updated_at',
