@@ -1,3 +1,6 @@
+from datetime import datetime
+from django.utils.timezone import make_aware
+from django.shortcuts import get_object_or_404
 from rest_framework import generics, permissions, filters, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
@@ -6,19 +9,23 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
-from django.utils.dateparse import parse_date
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Photo, Tag, Like, Comment, PhotoRating
-from .serializers import PhotoSerializer, TagSerializer, LikeSerializer, CommentSerializer, PhotoRatingSerializer
+from .serializers import (
+    PhotoSerializer,
+    TagSerializer,
+    LikeSerializer,
+    CommentSerializer,
+    PhotoRatingSerializer,
+)
 from .filters import PhotoFilter
-from django.shortcuts import get_object_or_404
-from datetime import datetime
-from django.middleware.csrf import get_token
+
 
 # Pagination for photos
 class PhotoPagination(PageNumberPagination):
     page_size = 10
     max_page_size = 100
+
 
 # List and create photos
 class PhotoListCreateView(generics.ListCreateAPIView):
@@ -35,6 +42,7 @@ class PhotoListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(photographer=self.request.user)
 
+
 # Retrieve, update, and delete photos
 class PhotoDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Photo.objects.all()
@@ -44,12 +52,14 @@ class PhotoDetailView(generics.RetrieveUpdateDestroyAPIView):
     def delete(self, request, *args, **kwargs):
         photo = self.get_object()
         if photo.photographer != request.user:
-            return Response({'error': 'You do not have permission to delete this photo.'}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {'error': 'You do not have permission to delete this photo.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         return super().delete(request, *args, **kwargs)
 
-# View for listing the user's own photos, with date filtering
-from django.utils.timezone import make_aware
 
+# View for listing the user's own photos, with date filtering
 class MyPhotosListView(generics.ListAPIView):
     serializer_class = PhotoSerializer
     permission_classes = [IsAuthenticated]
@@ -58,7 +68,6 @@ class MyPhotosListView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         queryset = Photo.objects.filter(photographer=user)
-
         start_date = self.request.query_params.get('start_date')
         end_date = self.request.query_params.get('end_date')
 
@@ -88,6 +97,7 @@ class TopRatedPhotosView(generics.ListAPIView):
     def get_queryset(self):
         return Photo.objects.order_by('-rating')[:10]
 
+
 # Submit a rating for a photo
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -99,7 +109,9 @@ def rate_photo(request, pk):
         try:
             rating_value = int(rating_value)
             if 1 <= rating_value <= 5:
-                user_rating, created = PhotoRating.objects.get_or_create(user=request.user, photo=photo)
+                user_rating, created = PhotoRating.objects.get_or_create(
+                    user=request.user, photo=photo
+                )
                 if not created:
                     old_rating = user_rating.rating
                     user_rating.rating = rating_value
@@ -110,13 +122,23 @@ def rate_photo(request, pk):
                     photo.rating_count += 1
                 photo.rating = total_rating / photo.rating_count
                 photo.save()
-                return Response({'detail': 'Rating added or updated successfully!'}, status=status.HTTP_200_OK)
+                return Response(
+                    {'detail': 'Rating added or updated successfully!'},
+                    status=status.HTTP_200_OK,
+                )
             else:
-                return Response({'detail': 'Rating should be between 1 and 5.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {'detail': 'Rating should be between 1 and 5.'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
         except ValueError:
-            return Response({'detail': 'Invalid rating value.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'detail': 'Invalid rating value.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
     return Response({'detail': 'Rating not provided.'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 # Retrieve all ratings for a specific photo
 class PhotoRatingsView(generics.ListAPIView):
@@ -126,6 +148,7 @@ class PhotoRatingsView(generics.ListAPIView):
     def get_queryset(self):
         photo = get_object_or_404(Photo, pk=self.kwargs['pk'])
         return PhotoRating.objects.filter(photo=photo)
+
 
 # Like photo view
 class PhotoLikeView(APIView):
@@ -139,9 +162,15 @@ class PhotoLikeView(APIView):
         if created:
             photo.likes_count += 1
             photo.save()
-            return Response({'status': 'liked', 'likes_count': photo.likes_count}, status=status.HTTP_201_CREATED)
-        else:
-            return Response({'detail': 'You have already liked this photo.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'status': 'liked', 'likes_count': photo.likes_count},
+                status=status.HTTP_201_CREATED,
+            )
+        return Response(
+            {'detail': 'You have already liked this photo.'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
 
 # Unlike view
 class PhotoUnlikeView(APIView):
@@ -156,9 +185,15 @@ class PhotoUnlikeView(APIView):
             like_instance.delete()
             photo.likes_count -= 1
             photo.save()
-            return Response({'status': 'unliked', 'likes_count': photo.likes_count}, status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response({'detail': 'You have not liked this photo yet.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'status': 'unliked', 'likes_count': photo.likes_count},
+                status=status.HTTP_204_NO_CONTENT,
+            )
+        return Response(
+            {'detail': 'You have not liked this photo yet.'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
 
 # Create and list tags for photos
 class TagListCreateView(generics.ListCreateAPIView):
@@ -169,6 +204,7 @@ class TagListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save()
 
+
 # Create and list likes for photos
 class LikeListCreateView(generics.ListCreateAPIView):
     queryset = Like.objects.all()
@@ -178,6 +214,8 @@ class LikeListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+
+# Create and list comments for photos
 class CommentListCreateView(generics.ListCreateAPIView):
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -192,6 +230,8 @@ class CommentListCreateView(generics.ListCreateAPIView):
         photo = get_object_or_404(Photo, pk=photo_id)
         serializer.save(user=self.request.user, photo=photo)
 
+
+# Retrieve, update, and delete comments
 class CommentDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
@@ -200,7 +240,8 @@ class CommentDetailView(RetrieveUpdateDestroyAPIView):
     def perform_update(self, serializer):
         comment = self.get_object()
         if comment.user != self.request.user and not self.request.user.is_staff:
-            return Response({"error": "You are not allowed to edit this comment."}, status=403)
+            return Response(
+                {"error": "You are not allowed to edit this comment."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         serializer.save()
-
-

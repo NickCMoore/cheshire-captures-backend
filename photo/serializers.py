@@ -1,23 +1,28 @@
 from rest_framework import serializers
 from .models import Photo, Tag, Like, Comment, PhotoRating
 
+
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ['id', 'name'] 
+        fields = ['id', 'name']
+
 
 class PhotoRatingSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)  
+    user = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = PhotoRating
         fields = ['id', 'user', 'photo', 'rating', 'created_at']
 
+
 class PhotoSerializer(serializers.ModelSerializer):
-    photographer = serializers.ReadOnlyField(source='photographer.username')  
-    image_url = serializers.CharField(source='image.url', read_only=True)  
-    tags = TagSerializer(many=True, read_only=True) 
-    average_rating = serializers.DecimalField(source='rating', max_digits=3, decimal_places=2, read_only=True)
+    photographer = serializers.ReadOnlyField(source='photographer.username')
+    image_url = serializers.CharField(source='image.url', read_only=True)
+    tags = TagSerializer(many=True, read_only=True)
+    average_rating = serializers.DecimalField(
+        source='rating', max_digits=3, decimal_places=2, read_only=True
+    )
     user_rating = serializers.SerializerMethodField()
 
     class Meta:
@@ -25,7 +30,7 @@ class PhotoSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'photographer', 'title', 'description', 'image', 'image_url',
             'category', 'tags', 'created_at', 'updated_at',
-            'average_rating', 'user_rating'
+            'average_rating', 'user_rating',
         ]
         read_only_fields = ['created_at', 'updated_at', 'image_url']
 
@@ -42,6 +47,7 @@ class PhotoSerializer(serializers.ModelSerializer):
         """
         valid_image_extensions = ['jpg', 'jpeg', 'png', 'gif']
         file_extension = value.name.split('.')[-1].lower()
+
         if file_extension not in valid_image_extensions:
             raise serializers.ValidationError(
                 "Invalid file format. Please upload a valid image file (JPEG, PNG, or GIF)."
@@ -55,6 +61,7 @@ class PhotoSerializer(serializers.ModelSerializer):
 
         return value
 
+
 class LikeSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
 
@@ -62,12 +69,13 @@ class LikeSerializer(serializers.ModelSerializer):
         model = Like
         fields = ['id', 'photo', 'user', 'created_at']
 
+
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
     photo = serializers.SlugRelatedField(
         slug_field='id',
         queryset=Photo.objects.all(),
-        required=False  # Make it optional
+        required=False,  # Make it optional
     )
 
     class Meta:
