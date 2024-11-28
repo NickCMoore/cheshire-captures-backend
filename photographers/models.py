@@ -15,11 +15,11 @@ class Photographer(models.Model):
 
     profile_image = models.ImageField(
         upload_to='images/', 
-        default='images/icecoast'
+        default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1727862662/vestrahorn-mountains-stokksnes-iceland_aoqbtp.jpg'
     )
     cover_image = models.ImageField(
         upload_to='cover_images/', 
-        default='cover_images/mountains'
+        default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1727862662/vestrahorn-mountains-stokksnes-iceland_aoqbtp.jpg'
     )
 
     location = models.CharField(max_length=255, blank=True)
