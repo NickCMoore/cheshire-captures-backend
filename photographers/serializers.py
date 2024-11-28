@@ -1,5 +1,8 @@
-from .models import Photographer, Follow, Photo
-from .serializers import PhotoSerializer
+from rest_framework import serializers
+from photo.models import Photo
+from .models import Photographer, Follow
+from photo.serializers import PhotoSerializer
+
 
 class PhotographerSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(
