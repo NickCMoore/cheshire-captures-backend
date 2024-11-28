@@ -25,7 +25,7 @@ class Photo(models.Model):
     likes_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    category = models.CharField(max_length=100, blank=True)
+    category = models.CharField(max_length=255, blank=True)
     tags = models.ManyToManyField(Tag, related_name='photos', blank=True)
     rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
     rating_count = models.PositiveIntegerField(default=0)
