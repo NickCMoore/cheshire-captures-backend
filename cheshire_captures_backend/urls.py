@@ -43,7 +43,6 @@ urlpatterns = [
     # API-specific routes (ensure you have the urls.py in these apps)
     path('api/photographers/', include('photographers.urls')),  # Photographer-related API
     path('api/photos/', include('photo.urls')),  # Photo-related API
-    path('api/messages/', include('messaging.urls')),  # Messaging-related API
 
     # Swagger and Redoc API documentation
     path(
