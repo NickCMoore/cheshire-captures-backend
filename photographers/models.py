@@ -13,12 +13,12 @@ class Photographer(models.Model):
     total_likes = models.PositiveIntegerField(default=0)
 
     profile_image = models.ImageField(
-        upload_to='images/', 
-        default='images/icecoast'
+        upload_to='images/',
+        default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1727862662/vestrahorn-mountains-stokksnes-iceland_aoqbtp.jpg'
     )
     cover_image = models.ImageField(
-        upload_to='cover_images/', 
-        default='cover_images/mountains'
+        upload_to='cover_images/',
+        default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1727862662/vestrahorn-mountains-stokksnes-iceland_aoqbtp.jpg'
     )
 
     location = models.CharField(max_length=255, blank=True)
