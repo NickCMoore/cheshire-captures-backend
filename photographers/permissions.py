@@ -1,5 +1,5 @@
 from rest_framework import permissions
-
+from messaging.models import Message
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
@@ -9,7 +9,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
         if not request.user.is_authenticated:
             return False
 
-        if isinstance(obj):
+        if isinstance(obj, Message):
             return obj.sender.user == request.user
 
         return obj.user == request.user
