@@ -1,7 +1,7 @@
 from django.db import models
-from django.db.models.signals import post_save, post_delete
-from django.dispatch import receiver
 from django.contrib.auth.models import User
+from django.utils.text import slugify
+from django.utils.crypto import get_random_string
 
 class Photographer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -11,6 +11,7 @@ class Photographer(models.Model):
     bio = models.TextField(blank=True)
     follower_count = models.PositiveIntegerField(default=0)
     total_likes = models.PositiveIntegerField(default=0)
+    slug = models.SlugField(max_length=255, unique=True, blank=True)
 
     profile_image = models.ImageField(
         upload_to='images/',
@@ -29,13 +30,14 @@ class Photographer(models.Model):
     class Meta:
         ordering = ['-created_at']
 
+    def save(self, *args, **kwargs):
+        """Save the Photographer, generating a slug if not present."""
+        if not self.slug:
+            self.slug = slugify(self.display_name)[:50] + '-' + get_random_string(6)
+        super(Photographer, self).save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.display_name} ({self.user.username})"
-
-@receiver(post_save, sender=User)
-def create_photographer(sender, instance, created, **kwargs):
-    if created:
-        Photographer.objects.create(user=instance)
 
 class Follow(models.Model):
     follower = models.ForeignKey(Photographer, related_name='following', on_delete=models.CASCADE)
@@ -47,14 +49,3 @@ class Follow(models.Model):
 
     def __str__(self):
         return f"{self.follower.user.username} follows {self.following.user.username}"
-
-@receiver(post_save, sender=Follow)
-def update_follower_count_on_create(sender, instance, created, **kwargs):
-    if created:
-        instance.following.follower_count += 1
-        instance.following.save()
-
-@receiver(post_delete, sender=Follow)
-def update_follower_count_on_delete(sender, instance, **kwargs):
-    instance.following.follower_count -= 1
-    instance.following.save()
