@@ -50,6 +50,7 @@ ALLOWED_HOSTS = [
     os.environ.get('ALLOWED_HOST'),
     'localhost',
     '8000-nickcmoore-cheshirecapt-i1catxh7zvz.ws-eu116.gitpod.io',
+    '8000-nickcmoore-cheshirecapt-i1catxh7zvz.ws-eu117.gitpod.io',
 ]
 
 if 'CLIENT_ORIGIN' in os.environ:
