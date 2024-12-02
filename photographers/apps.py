@@ -6,4 +6,4 @@ class PhotographersConfig(AppConfig):
 
     def ready(self):
         # Import signals to ensure they are registered
-        import photographers.signals
+        import photographers.models
