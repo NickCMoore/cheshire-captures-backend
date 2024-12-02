@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import Photographer, Notification
+from .models import Photographer
 from django.contrib.auth.models import User
 
 @receiver(post_save, sender=User)
@@ -19,13 +19,3 @@ def handle_profile_save(sender, instance, **kwargs):
     """Handle actions after saving a profile."""
     if instance.is_suspended:
         send_suspension_notification(instance.user, instance.suspension_reason)
-
-def send_suspension_notification(user, reason):
-    """Send a suspension notification to a user."""
-    admin_user = User.objects.filter(is_superuser=True).first()
-    message = f'Your account has been suspended. Reason: {reason}'
-    Notification.objects.create(
-        recipient=user,
-        sender=admin_user,
-        message=message,
-    )
