@@ -5,6 +5,8 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework_simplejwt.views import TokenRefreshView
 from .views import root_route, logout_route
+from django.conf import settings  # To access DEBUG
+import debug_toolbar  # Import debug toolbar
 
 # Schema view setup for Swagger and Redoc API documentation
 schema_view = get_schema_view(
@@ -56,3 +58,9 @@ urlpatterns = [
         name='schema-redoc',
     ),
 ]
+
+# Include Debug Toolbar in debug mode
+if settings.DEBUG:
+    urlpatterns += [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ]

@@ -14,4 +14,3 @@ def save_photographer(sender, instance, **kwargs):
     """Save the Photographer when the User is saved."""
     if hasattr(instance, 'photographer'):
         instance.photographer.save()
-S
