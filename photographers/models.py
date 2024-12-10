@@ -1,7 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils.text import slugify
-from django.utils.crypto import get_random_string
 
 class Photographer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -15,11 +13,11 @@ class Photographer(models.Model):
 
     profile_image = models.ImageField(
         upload_to='images/',
-        default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1727862662/vestrahorn-mountains-stokksnes-iceland_aoqbtp.jpg'
+        default=settings.DEFAULT_PROFILE_IMAGE_URL
     )
     cover_image = models.ImageField(
         upload_to='cover_images/',
-        default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1727862662/vestrahorn-mountains-stokksnes-iceland_aoqbtp.jpg'
+        default=settings.DEFAULT_COVER_IMAGE_URL
     )
 
     location = models.CharField(max_length=255, blank=True)
@@ -30,14 +28,13 @@ class Photographer(models.Model):
     class Meta:
         ordering = ['-created_at']
 
-    def save(self, *args, **kwargs):
-        """Save the Photographer, generating a slug if not present."""
-        if not self.slug:
-            self.slug = slugify(self.display_name)[:50] + '-' + get_random_string(6)
-        super(Photographer, self).save(*args, **kwargs)
-
     def __str__(self):
         return f"{self.display_name} ({self.user.username})"
+
+@receiver(post_save, sender=User)
+def create_photographer(sender, instance, created, **kwargs):
+    if created:
+        Photographer.objects.create(user=instance)
 
 class Follow(models.Model):
     follower = models.ForeignKey(Photographer, related_name='following', on_delete=models.CASCADE)
@@ -45,7 +42,24 @@ class Follow(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('follower', 'following')
+        constraints = [
+            models.UniqueConstraint(fields=['follower', 'following'], name='unique_follow')
+        ]
+
+    def clean(self):
+        if self.follower == self.following:
+            raise ValidationError("You cannot follow yourself.")
 
     def __str__(self):
         return f"{self.follower.user.username} follows {self.following.user.username}"
+
+@receiver(post_save, sender=Follow)
+def update_follower_count_on_create(sender, instance, created, **kwargs):
+    if created:
+        instance.following.follower_count += 1
+        instance.following.save()
+
+@receiver(post_delete, sender=Follow)
+def update_follower_count_on_delete(sender, instance, **kwargs):
+    instance.following.follower_count -= 1
+    instance.following.save()
