@@ -28,20 +28,30 @@ REST_FRAMEWORK = {
     "DATETIME_FORMAT": "%d %b %Y",
 }
 
-if "DEV" not in os.environ:
-    REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = [
-        "rest_framework.renderers.JSONRenderer",
+# Use JSON renderer only in production
+if 'DEV' not in os.environ:
+    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = [
+        'rest_framework.renderers.BrowsableAPIRenderer',
+        'rest_framework.renderers.JSONRenderer',
     ]
 
+# JWT settings
 REST_USE_JWT = True
-JWT_AUTH_SECURE = False  # Disable for development, enable for production
-JWT_AUTH_COOKIE = "my-app-auth"
-JWT_AUTH_REFRESH_COOKIE = "my-refresh-token"
-JWT_AUTH_SAMESITE = "Lax"  # Relaxed for development
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+}
+JWT_AUTH_SECURE = True
+JWT_AUTH_COOKIE = 'my-app-auth'
+JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
+JWT_AUTH_SAMESITE = 'None'
 
 REST_AUTH_SERIALIZERS = {
-    "USER_DETAILS_SERIALIZER": "cheshire_captures_backend.serializers.CurrentUserSerializer",
-    "TOKEN_SERIALIZER": "cheshire_captures_backend.serializers.CustomTokenSerializer",
+    'USER_DETAILS_SERIALIZER': 'cheshire_captures_backend.serializers.CurrentUserSerializer',
 }
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
@@ -49,7 +59,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    os.environ.get('ALLOWED_HOST'),
+    os.environ.get('CLIENT_ORIGIN_DEV', ''),
     'localhost',
     '8000-nickcmoore-cheshirecapt-7hlvafv7oid.ws.codeinstitute-ide.net',
 ]
@@ -67,7 +77,8 @@ CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
     "https://cheshire-captures-4a500dc7ab0a.herokuapp.com",  # Production frontend
     "http://localhost:3000", 
-    "https://3000-nickcmoore-cheshirecapt-dw1mimc0nbi.ws.codeinstitute-ide.net",  # Development frontend
+    "https://3000-nickcmoore-cheshirecapt-dw1mimc0nbi.ws.codeinstitute-ide.net",
+    "https://8000-nickcmoore-cheshirecapt-7hlvafv7oid.ws.codeinstitute-ide.net",  # Development frontend
 ]
 
 # Application definition
