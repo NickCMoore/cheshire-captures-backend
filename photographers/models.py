@@ -1,5 +1,8 @@
 from django.db import models
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 from django.contrib.auth.models import User
+from django.conf import settings 
 
 class Photographer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -9,15 +12,14 @@ class Photographer(models.Model):
     bio = models.TextField(blank=True)
     follower_count = models.PositiveIntegerField(default=0)
     total_likes = models.PositiveIntegerField(default=0)
-    slug = models.SlugField(max_length=255, unique=True, blank=True)
 
     profile_image = models.ImageField(
         upload_to='images/',
-        default=settings.DEFAULT_PROFILE_IMAGE_URL
+        default=settings.DEFAULT_PROFILE_IMAGE_URL 
     )
     cover_image = models.ImageField(
         upload_to='cover_images/',
-        default=settings.DEFAULT_COVER_IMAGE_URL
+        default=settings.DEFAULT_PROFILE_IMAGE_URL
     )
 
     location = models.CharField(max_length=255, blank=True)
@@ -42,13 +44,7 @@ class Follow(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['follower', 'following'], name='unique_follow')
-        ]
-
-    def clean(self):
-        if self.follower == self.following:
-            raise ValidationError("You cannot follow yourself.")
+        unique_together = ('follower', 'following')
 
     def __str__(self):
         return f"{self.follower.user.username} follows {self.following.user.username}"

@@ -51,13 +51,13 @@ DEBUG = True
 ALLOWED_HOSTS = [
     os.environ.get('ALLOWED_HOST'),
     'localhost',
-    '8000-nickcmoore-cheshirecapt-i1catxh7zvz.ws-eu116.gitpod.io',
+    '8000-nickcmoore-cheshirecapt-7hlvafv7oid.ws.codeinstitute-ide.net',
 ]
 
 # CORS Configuration
 CORS_ALLOWED_ORIGINS = [
     "https://cheshire-captures-4a500dc7ab0a.herokuapp.com",  # Production frontend
-    "http://localhost:3000",  # Localhost frontend
+    "http://localhost:3000", 
     "https://3000-nickcmoore-cheshirecapt-dw1mimc0nbi.ws.codeinstitute-ide.net",  # Development frontend
 ]
 
@@ -66,7 +66,7 @@ CORS_ALLOW_CREDENTIALS = True
 # CSRF Configuration
 CSRF_TRUSTED_ORIGINS = [
     "https://cheshire-captures-4a500dc7ab0a.herokuapp.com",  # Production frontend
-    "http://localhost:3000",  # Localhost frontend
+    "http://localhost:3000", 
     "https://3000-nickcmoore-cheshirecapt-dw1mimc0nbi.ws.codeinstitute-ide.net",  # Development frontend
 ]
 
@@ -93,6 +93,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'photo',
     'photographers',
+    'debug_toolbar',
 ]
 
 SITE_ID = 1
@@ -107,6 +108,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = "cheshire_captures_backend.urls"
@@ -168,3 +171,6 @@ USE_TZ = True
 STATIC_URL = "/static/"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+DEFAULT_PROFILE_IMAGE_URL = "https://res.cloudinary.com/dwgtce0rh/image/upload/v1732845896/zhmwexi1zadfypgnolok.jpg"
+
