@@ -5,12 +5,12 @@ from .models import Photographer
 
 @receiver(post_save, sender=User)
 def create_photographer(sender, instance, created, **kwargs):
-    """Create a Photographer for a new User."""
-    if created:
+    """Create a Photographer for a new User, only if it doesn't exist."""
+    if created and not hasattr(instance, 'photographer'):
         Photographer.objects.create(user=instance)
 
 @receiver(post_save, sender=User)
 def save_photographer(sender, instance, **kwargs):
-    """Save the Photographer when the User is saved."""
+    """Save the Photographer when the User is updated."""
     if hasattr(instance, 'photographer'):
         instance.photographer.save()

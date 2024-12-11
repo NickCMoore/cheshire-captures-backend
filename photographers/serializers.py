@@ -8,9 +8,17 @@ class PhotographerSerializer(serializers.ModelSerializer):
     is_user = serializers.SerializerMethodField()
 
     def get_is_user(self, obj):
+        # Get the request object from the serializer context
         request = self.context.get('request', None)
-        if request and request.user.is_authenticated:
-            return request.user == obj.user
+        if request:
+            if request.user.is_authenticated:
+                is_current_user = request.user == obj.user
+                print(f"DEBUG: Request User: {request.user}, Photographer User: {obj.user}, is_user: {is_current_user}")
+                return is_current_user
+            else:
+                print("DEBUG: User not authenticated.")
+        else:
+            print("DEBUG: Request context missing.")
         return False
 
     class Meta:
