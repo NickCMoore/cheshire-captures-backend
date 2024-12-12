@@ -20,7 +20,7 @@ class PhotographerSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'user', 'display_name', 'bio', 'profile_image',
             'location', 'cover_image', 'website', 'instagram',
-            'twitter', 'created_at', 'updated_at', 'is_user'
+            'twitter', 'created_at', 'updated_at', 'is_user', 'photos' 
         ]
         read_only_fields = ['id', 'user', 'created_at', 'updated_at']
 
