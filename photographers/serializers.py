@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from photo.serializers import PhotoSerializer
 from .models import Photographer, Follow
 
 class PhotographerSerializer(serializers.ModelSerializer):
@@ -6,19 +7,12 @@ class PhotographerSerializer(serializers.ModelSerializer):
     updated_at = serializers.DateTimeField(format="%d %b %Y", read_only=True)
     user = serializers.ReadOnlyField(source='user.username', read_only=True)
     is_user = serializers.SerializerMethodField()
+    photos = PhotoSerializer(many=True, read_only=True)
 
     def get_is_user(self, obj):
-        # Get the request object from the serializer context
         request = self.context.get('request', None)
-        if request:
-            if request.user.is_authenticated:
-                is_current_user = request.user == obj.user
-                print(f"DEBUG: Request User: {request.user}, Photographer User: {obj.user}, is_user: {is_current_user}")
-                return is_current_user
-            else:
-                print("DEBUG: User not authenticated.")
-        else:
-            print("DEBUG: Request context missing.")
+        if request and request.user.is_authenticated:
+            return request.user == obj.user
         return False
 
     class Meta:
