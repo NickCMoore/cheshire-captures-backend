@@ -37,7 +37,6 @@ class Photographer(models.Model):
         return f"{self.display_name or self.user.username} ({self.user.username})"
 
     def save(self, *args, **kwargs):
-        # Automatically generate a slug based on the username if it's not provided
         if not self.slug:
             self.slug = slugify(self.user.username)
         super().save(*args, **kwargs)
