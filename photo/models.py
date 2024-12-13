@@ -20,7 +20,7 @@ class Photo(models.Model):
     description = models.TextField(blank=True)
     image = CloudinaryField(
         'image',
-        default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1727862662/vestrahorn-mountains-stokksnes-iceland_aoqbtp.jpg',
+        default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1734130716/media/images/vestrahorn-mountains-stokksnes-iceland_shqcac.jpg',
     )
     likes_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
