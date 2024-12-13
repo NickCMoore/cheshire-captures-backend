@@ -207,6 +207,3 @@ LOGGING = {
         'level': 'DEBUG',
     },
 }
-
-DEFAULT_PROFILE_IMAGE_URL = "https://res.cloudinary.com/dwgtce0rh/image/upload/v1732845896/zhmwexi1zadfypgnolok.jpg"
-
