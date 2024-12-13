@@ -17,6 +17,11 @@ class Photographer(models.Model):
         default='../coast'
     )
 
+    cover_image = models.ImageField(
+        upload_to='images/', 
+        default='../cs99p88tqdy3vf87cikh'
+    )
+
     location = models.CharField(max_length=255, blank=True)
     website = models.URLField(max_length=255, blank=True)
     instagram = models.URLField(max_length=255, blank=True)
