@@ -36,12 +36,6 @@ class Photographer(models.Model):
     def __str__(self):
         return f"{self.display_name or self.user.username} ({self.user.username})"
 
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.user.username)
-        super().save(*args, **kwargs)
-
-
 class Follow(models.Model):
     follower = models.ForeignKey(
         Photographer, related_name='following', on_delete=models.CASCADE
