@@ -14,12 +14,10 @@ class Photographer(models.Model):
 
     profile_image = models.ImageField(
         upload_to='images/', 
-        default='../coast'
     )
 
     cover_image = models.ImageField(
         upload_to='images/', 
-        default='../cs99p88tqdy3vf87cikh'
     )
 
     location = models.CharField(max_length=255, blank=True)
