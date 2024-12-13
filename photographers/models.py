@@ -1,10 +1,9 @@
 from django.db import models
-from django.db.models.signals import post_save, post_delete
-from django.dispatch import receiver
-from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils.text import slugify
-
+from django.dispatch import receiver
+from django.db.models.signals import post_save, post_delete
+from django.contrib.auth.models import User
 
 class Photographer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -20,6 +19,7 @@ class Photographer(models.Model):
         upload_to='images/',
         default=settings.DEFAULT_PROFILE_IMAGE_URL
     )
+
     cover_image = models.ImageField(
         upload_to='cover_images/',
         default=settings.DEFAULT_PROFILE_IMAGE_URL
@@ -40,24 +40,6 @@ class Photographer(models.Model):
         if not self.slug:
             self.slug = slugify(self.user.username)
         super().save(*args, **kwargs)
-
-
-@receiver(post_save, sender=User)
-def create_photographer(sender, instance, created, **kwargs):
-    """
-    Automatically create a Photographer profile for a new User.
-    """
-    if created:
-        Photographer.objects.create(user=instance)
-
-
-@receiver(post_save, sender=User)
-def save_photographer(sender, instance, **kwargs):
-    """
-    Save the Photographer profile when the User is updated.
-    """
-    if hasattr(instance, 'photographer'):
-        instance.photographer.save()
 
 
 class Follow(models.Model):
