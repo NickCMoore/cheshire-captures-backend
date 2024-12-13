@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from photo.serializers import PhotoSerializer
 from .models import Photographer, Follow
 
 class PhotographerSerializer(serializers.ModelSerializer):
@@ -7,7 +6,6 @@ class PhotographerSerializer(serializers.ModelSerializer):
     updated_at = serializers.DateTimeField(format="%d %b %Y", read_only=True)
     user = serializers.ReadOnlyField(source='user.username', read_only=True)
     is_user = serializers.SerializerMethodField()
-    photos = PhotoSerializer(many=True, read_only=True)
 
     def get_is_user(self, obj):
         request = self.context.get('request', None)
@@ -18,9 +16,9 @@ class PhotographerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photographer
         fields = [
-            'id', 'user', 'display_name', 'bio', 'profile_image',
-            'location', 'cover_image', 'website', 'instagram',
-            'twitter', 'created_at', 'updated_at', 'is_user', 'photos' 
+            'id', 'user', 'display_name', 'bio', 'profile_image', 
+            'location', 'cover_image', 'website', 'instagram', 
+            'twitter', 'created_at', 'updated_at', 'is_user'
         ]
         read_only_fields = ['id', 'user', 'created_at', 'updated_at']
 

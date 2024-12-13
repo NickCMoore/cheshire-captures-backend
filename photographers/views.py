@@ -6,7 +6,6 @@ from django.shortcuts import get_object_or_404
 from .models import Photographer, Follow
 from .serializers import PhotographerSerializer
 from rest_framework.permissions import IsAuthenticated
-from .permissions import IsOwnerOrReadOnly
 
 # List all photographers, ordered by the number of followers
 class PhotographerList(generics.ListAPIView):
@@ -16,18 +15,15 @@ class PhotographerList(generics.ListAPIView):
     serializer_class = PhotographerSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+# Retrieve or update photographer details with partial update support
 class PhotographerDetail(generics.RetrieveUpdateAPIView):
     queryset = Photographer.objects.all()
     serializer_class = PhotographerSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]  # Apply permissions
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', True)  # Support partial updates
         instance = self.get_object()
-
-        # Permission check is now handled by IsOwnerOrReadOnly
-        self.check_object_permissions(request, instance)
-
         serializer = self.get_serializer(instance, data=request.data, partial=partial, context={'request': request})
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
