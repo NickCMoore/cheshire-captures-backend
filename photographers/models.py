@@ -14,11 +14,7 @@ class Photographer(models.Model):
 
     profile_image = models.ImageField(
         upload_to='images/', 
-        default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1727870434/24633_a5n9zu.jpg'
-    )
-    cover_image = models.ImageField(
-        upload_to='cover_images/', 
-        default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1727870434/24633_a5n9zu.jpg'
+        default='../coast'
     )
 
     location = models.CharField(max_length=255, blank=True)
