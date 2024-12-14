@@ -14,12 +14,12 @@ class Photographer(models.Model):
 
     profile_image = models.ImageField(
         upload_to='images/', 
-        default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1734130716/media/images/vestrahorn-mountains-stokksnes-iceland_shqcac.jpg'
+        default='../gettyimages-10157832-612x612_mj1plv.jpg'
     )
 
     cover_image = models.ImageField(
         upload_to='images/',
-        default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1734130716/media/images/vestrahorn-mountains-stokksnes-iceland_shqcac.jpg' 
+        default='../gettyimages-10157832-612x612_mj1plv.jpg'
     )
 
     location = models.CharField(max_length=255, blank=True)
