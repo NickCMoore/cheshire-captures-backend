@@ -34,6 +34,21 @@ class PhotoSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['created_at', 'updated_at', 'image_url']
 
+        from rest_framework import serializers
+from .models import Photo
+
+class PhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Photo
+        fields = ['id', 'title', 'description', 'image', 'category', 'tags']
+
+    def validate_category(self, value):
+        allowed_categories = ['Nature', 'Urban', 'Portrait', 'Event', 'Landscape']
+        if value and value not in allowed_categories:
+            raise serializers.ValidationError("Invalid category")
+        return value
+
+
     def get_user_rating(self, obj):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
