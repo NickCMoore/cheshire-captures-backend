@@ -14,12 +14,12 @@ class Photographer(models.Model):
 
     profile_image = models.ImageField(
         upload_to='images/', 
-        default='../gettyimages-10157832-612x612_mj1plv.jpg'
+        default='../Sunset_fuvnnj'
     )
 
     cover_image = models.ImageField(
         upload_to='images/',
-        default='../gettyimages-10157832-612x612_mj1plv.jpg'
+        default='../Sunset_fuvnnj'
     )
 
     location = models.CharField(max_length=255, blank=True)
