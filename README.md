@@ -122,7 +122,7 @@ Users can like photos to show appreciation and remove likes if desired.
 
 ### Followers Data
 
-Users can follow/unfollow other photographers, helping them keep up with their favorite photographers' work.
+Users can follow/unfollow other photographers, helping them keep up with their favourite photographers' work.
 
 ### Ratings and Reviews Data
 
@@ -133,10 +133,6 @@ Users can rate and review photos to provide feedback to photographers. These rat
 ### GitHub Project Board
 
 The project was managed using GitHub’s Kanban board to organize tasks based on user stories and development goals. Each feature was tracked and prioritized using the MoSCoW method.
-
-
-![Project Board](images/project_workflow.png)
-
 
 [GitHub Project Board](https://github.com/users/NickCMoore/projects/3)
 
@@ -380,7 +376,7 @@ This project would not have been possible without the help of several resources,
 
 - The logo for **Cheshire Captures** was designed using [FreeLogoDesign.org](https://www.freelogodesign.org). I started with their free design templates and tailored them to match the unique identity of the platform.
 
-- To refine the branding, I used [Fotor](https://www.fotor.com) to make the logo’s background transparent, allowing it to integrate seamlessly across different color schemes on the site.
+- To refine the branding, I used [Fotor](https://www.fotor.com) to make the logo’s background transparent, allowing it to integrate seamlessly across different colour schemes on the site.
 
 - When implementing the **Delete Confirmation Modal** for managing posts and comments, I consulted an insightful article shared by tutor support. It provided a foundational understanding of modal creation in React, which I then adapted to suit the functionality required in this project.
 
