@@ -96,8 +96,7 @@ The following models have been developed for the Cheshire Captures API:
 - **Rating**: Stores star ratings for photos.
 - **Review**: Stores user reviews with star ratings for photos.
 
-The relationships between these models are illustrated in the following entity relationship diagram:
-![ERD](https://link-to-your-ERD-image)
+The relationships between these models are illustrated in an entity relationship diagram.
 
 ## Features
 
@@ -139,7 +138,7 @@ The project was managed using GitHub’s Kanban board to organize tasks based on
 ![Project Board](images/project_workflow.png)
 
 
-![GitHub Project Board](https://github.com/users/NickCMoore/projects/3)
+[GitHub Project Board](https://github.com/users/NickCMoore/projects/3)
 
 ## Testing
 
@@ -408,4 +407,4 @@ A huge thanks to the **Cheshire Captures** community, whose input inspired many 
 
 Lastly, I want to acknowledge the vast array of online resources and communities—particularly **Unsplash**, **Pngtree**, **Stack Overflow**, and **GitConnected**—for offering the tutorials, tools, and assets that helped bring this project to life.
 
-**[Nick Moore]**, [October] [2024]
+**Nick Moore**, December 2024
