@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='photographer',
             name='cover_image',
-            field=models.ImageField(default='../cs99p88tqdy3vf87cikh', upload_to='images/'),
+            field=models.ImageField(
+                default='../cs99p88tqdy3vf87cikh', upload_to='images/'),
         ),
     ]

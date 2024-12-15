@@ -3,6 +3,7 @@ from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 
+
 class Photographer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -13,7 +14,7 @@ class Photographer(models.Model):
     total_likes = models.PositiveIntegerField(default=0)
 
     profile_image = models.ImageField(
-        upload_to='images/', 
+        upload_to='images/',
         default='../Sunset_fuvnnj'
     )
 
@@ -33,14 +34,18 @@ class Photographer(models.Model):
     def __str__(self):
         return f"{self.display_name} ({self.user.username})"
 
+
 @receiver(post_save, sender=User)
 def create_photographer(sender, instance, created, **kwargs):
     if created:
         Photographer.objects.create(user=instance)
 
+
 class Follow(models.Model):
-    follower = models.ForeignKey(Photographer, related_name='following', on_delete=models.CASCADE)
-    following = models.ForeignKey(Photographer, related_name='followers', on_delete=models.CASCADE)
+    follower = models.ForeignKey(
+        Photographer, related_name='following', on_delete=models.CASCADE)
+    following = models.ForeignKey(
+        Photographer, related_name='followers', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -49,11 +54,13 @@ class Follow(models.Model):
     def __str__(self):
         return f"{self.follower.user.username} follows {self.following.user.username}"
 
+
 @receiver(post_save, sender=Follow)
 def update_follower_count_on_create(sender, instance, created, **kwargs):
     if created:
         instance.following.follower_count += 1
         instance.following.save()
+
 
 @receiver(post_delete, sender=Follow)
 def update_follower_count_on_delete(sender, instance, **kwargs):

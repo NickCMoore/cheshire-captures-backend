@@ -14,7 +14,8 @@ def custom_exception_handler(exc, context):
         if isinstance(exc, Http404):
             raise Http404("The requested resource was not found.")
         elif isinstance(exc, PermissionDenied):
-            raise PermissionDenied("You do not have permission to access this resource.")
+            raise PermissionDenied(
+                "You do not have permission to access this resource.")
         else:
             raise exc
 

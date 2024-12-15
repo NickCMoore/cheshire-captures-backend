@@ -8,6 +8,8 @@ from .serializers import PhotographerSerializer
 from rest_framework.permissions import IsAuthenticated
 
 # List all photographers, ordered by the number of followers
+
+
 class PhotographerList(generics.ListAPIView):
     queryset = Photographer.objects.filter(user__isnull=False) \
                                    .annotate(total_followers=Count('followers')) \
@@ -16,6 +18,8 @@ class PhotographerList(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 # Retrieve or update photographer details with partial update support
+
+
 class PhotographerDetail(generics.RetrieveUpdateAPIView):
     queryset = Photographer.objects.all()
     serializer_class = PhotographerSerializer
@@ -24,21 +28,24 @@ class PhotographerDetail(generics.RetrieveUpdateAPIView):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', True)  # Support partial updates
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial, context={'request': request})
+        serializer = self.get_serializer(
+            instance, data=request.data, partial=partial, context={'request': request})
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)
 
 # API to follow or unfollow a photographer
+
+
 class FollowPhotographerView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
         photographer = get_object_or_404(Photographer, pk=pk)
-        
+
         # Check if user has a photographer profile
         try:
-            follower = request.user.photographer  
+            follower = request.user.photographer
         except Photographer.DoesNotExist:
             return Response({'detail': 'You do not have a photographer profile.'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -56,12 +63,13 @@ class FollowPhotographerView(APIView):
 
         # Check if user has a photographer profile
         try:
-            follower = request.user.photographer  
+            follower = request.user.photographer
         except Photographer.DoesNotExist:
             return Response({'detail': 'You do not have a photographer profile.'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Check if not following
-        follow_instance = Follow.objects.filter(follower=follower, following=photographer).first()
+        follow_instance = Follow.objects.filter(
+            follower=follower, following=photographer).first()
         if not follow_instance:
             return Response({'detail': 'You are not following this photographer.'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -71,6 +79,8 @@ class FollowPhotographerView(APIView):
         return Response({'status': 'unfollowed'}, status=status.HTTP_204_NO_CONTENT)
 
 # List top photographers by the number of followers, excluding deleted users
+
+
 class TopPhotographersView(generics.ListAPIView):
     serializer_class = PhotographerSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -82,10 +92,13 @@ class TopPhotographersView(generics.ListAPIView):
                                    .order_by('-total_followers')
 
 # API endpoint to list all followers of a specific photographer
+
+
 class PhotographerFollowersAPIView(APIView):
     def get(self, request, pk):
         photographer = get_object_or_404(Photographer, pk=pk)
         followers = photographer.followers.all()  # Using the reverse relationship
 
-        followers_list = [{'id': follower.user.id, 'username': follower.user.username} for follower in followers]
+        followers_list = [{'id': follower.user.id,
+                           'username': follower.user.username} for follower in followers]
         return Response({'followers': followers_list})

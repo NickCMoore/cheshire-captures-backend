@@ -17,12 +17,14 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='photographer',
             name='cover_image',
-            field=models.ImageField(default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1732845896/zhmwexi1zadfypgnolok.jpg', upload_to='cover_images/'),
+            field=models.ImageField(
+                default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1732845896/zhmwexi1zadfypgnolok.jpg', upload_to='cover_images/'),
         ),
         migrations.AlterField(
             model_name='photographer',
             name='profile_image',
-            field=models.ImageField(default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1732845896/zhmwexi1zadfypgnolok.jpg', upload_to='images/'),
+            field=models.ImageField(
+                default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1732845896/zhmwexi1zadfypgnolok.jpg', upload_to='images/'),
         ),
         migrations.AlterField(
             model_name='photographer',

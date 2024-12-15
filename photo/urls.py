@@ -20,7 +20,8 @@ urlpatterns = [
     path('photos/my_photos/', MyPhotosListView.as_view(), name='my-photos'),
     path('photos/top-rated/', TopRatedPhotosView.as_view(), name='top-rated-photos'),
     path('photos/<int:pk>/rate/', rate_photo, name='photo-rate'),
-    path('photos/<int:pk>/ratings/', PhotoRatingsView.as_view(), name='photo-ratings'),
+    path('photos/<int:pk>/ratings/',
+         PhotoRatingsView.as_view(), name='photo-ratings'),
     path('tags/', TagListCreateView.as_view(), name='tag-list'),
     path(
         'photos/<int:pk>/comments/',

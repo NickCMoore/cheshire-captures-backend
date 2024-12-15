@@ -108,22 +108,22 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     'https://cheshire-captures-4a500dc7ab0a.herokuapp.com',
-    'https://3000-nickcmoore-cheshirecapt-hbw1s77xkey.ws-eu116.gitpod.io',  
+    'https://3000-nickcmoore-cheshirecapt-hbw1s77xkey.ws-eu116.gitpod.io',
 ]
 
 # CORS settings
 if 'CLIENT_ORIGIN' in os.environ:
     CORS_ALLOWED_ORIGINS = [
-        os.environ.get('CLIENT_ORIGIN') 
+        os.environ.get('CLIENT_ORIGIN')
     ]
 if 'CLIENT_ORIGIN_DEV' in os.environ:
-    CORS_ALLOWED_ORIGIN_REGEXES = [ 
+    CORS_ALLOWED_ORIGIN_REGEXES = [
         os.environ.get('CLIENT_ORIGIN_DEV', ''),
     ]
 
 CORS_ALLOW_CREDENTIALS = True
 
-DEBUG = True
+DEBUG = False
 
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = [
@@ -162,7 +162,7 @@ DATABASES = {
                 else {
                     'ENGINE': 'django.db.backends.sqlite3',
                     'NAME': BASE_DIR / 'db.sqlite3',
-                })
+    })
 }
 
 # Password validation

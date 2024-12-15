@@ -35,9 +35,11 @@ class PhotoListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     pagination_class = PhotoPagination
     parser_classes = [MultiPartParser, FormParser]
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [DjangoFilterBackend,
+                       filters.SearchFilter, filters.OrderingFilter]
     filterset_class = PhotoFilter
-    search_fields = ['title', 'description', 'category', 'photographer__username']
+    search_fields = ['title', 'description',
+                     'category', 'photographer__username']
     ordering_fields = ['created_at', 'title']
 
     def perform_create(self, serializer):
@@ -74,14 +76,17 @@ class MyPhotosListView(generics.ListAPIView):
 
         if start_date:
             try:
-                start_date_with_time = make_aware(datetime.strptime(start_date, "%Y-%m-%d"))
-                queryset = queryset.filter(created_at__gte=start_date_with_time)
+                start_date_with_time = make_aware(
+                    datetime.strptime(start_date, "%Y-%m-%d"))
+                queryset = queryset.filter(
+                    created_at__gte=start_date_with_time)
             except ValueError:
                 pass
 
         if end_date:
             try:
-                end_date_with_time = make_aware(datetime.strptime(end_date, "%Y-%m-%d"))
+                end_date_with_time = make_aware(
+                    datetime.strptime(end_date, "%Y-%m-%d"))
                 queryset = queryset.filter(created_at__lte=end_date_with_time)
             except ValueError:
                 pass
@@ -111,20 +116,23 @@ def rate_photo(request, pk):
         if not (1 <= rating_value <= 5):
             return Response({'detail': 'Rating must be between 1 and 5.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        user_rating, created = PhotoRating.objects.get_or_create(user=request.user, photo=photo)
+        user_rating, created = PhotoRating.objects.get_or_create(
+            user=request.user, photo=photo)
         if not created:
             # Update existing rating
             old_rating = user_rating.rating
             user_rating.rating = rating_value
             user_rating.save()
             photo.rating_count = F('rating_count')
-            photo.rating = (F('rating') * F('rating_count') - old_rating + rating_value) / F('rating_count')
+            photo.rating = (F('rating') * F('rating_count') -
+                            old_rating + rating_value) / F('rating_count')
         else:
             # Add new rating
             user_rating.rating = rating_value
             user_rating.save()
             photo.rating_count = F('rating_count') + 1
-            photo.rating = (F('rating') * (F('rating_count') - 1) + rating_value) / F('rating_count')
+            photo.rating = (F('rating') * (F('rating_count') -
+                            1) + rating_value) / F('rating_count')
 
         photo.save()
         return Response({'detail': 'Rating added or updated successfully!'}, status=status.HTTP_200_OK)
@@ -149,7 +157,8 @@ class PhotoLikeView(APIView):
     def post(self, request, pk):
         photo = get_object_or_404(Photo, pk=pk)
         user = request.user
-        like_instance, created = Like.objects.get_or_create(user=user, photo=photo)
+        like_instance, created = Like.objects.get_or_create(
+            user=user, photo=photo)
 
         if created:
             photo.likes_count += 1

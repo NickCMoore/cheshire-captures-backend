@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='photo',
             name='image',
-            field=cloudinary.models.CloudinaryField(default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1734130716/media/images/vestrahorn-mountains-stokksnes-iceland_shqcac.jpg', max_length=255, verbose_name='image'),
+            field=cloudinary.models.CloudinaryField(
+                default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1734130716/media/images/vestrahorn-mountains-stokksnes-iceland_shqcac.jpg', max_length=255, verbose_name='image'),
         ),
     ]

@@ -17,7 +17,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Tag',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=50, unique=True)),
             ],
             options={
@@ -27,18 +28,23 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Photo',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=255)),
                 ('description', models.TextField(blank=True)),
-                ('image', models.ImageField(default='images/raceday.jpg', upload_to='images/')),
+                ('image', models.ImageField(
+                    default='images/raceday.jpg', upload_to='images/')),
                 ('likes_count', models.PositiveIntegerField(default=0)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('category', models.CharField(blank=True, max_length=100)),
-                ('rating', models.DecimalField(decimal_places=2, default=0.0, max_digits=3)),
+                ('rating', models.DecimalField(
+                    decimal_places=2, default=0.0, max_digits=3)),
                 ('rating_count', models.PositiveIntegerField(default=0)),
-                ('photographer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='photos', to=settings.AUTH_USER_MODEL)),
-                ('tags', models.ManyToManyField(blank=True, related_name='photos', to='photo.tag')),
+                ('photographer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                 related_name='photos', to=settings.AUTH_USER_MODEL)),
+                ('tags', models.ManyToManyField(blank=True,
+                 related_name='photos', to='photo.tag')),
             ],
             options={
                 'ordering': ['-created_at'],
@@ -47,22 +53,28 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Like',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='likes', to=settings.AUTH_USER_MODEL)),
-                ('photo', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='likes', to='photo.photo')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                 related_name='likes', to=settings.AUTH_USER_MODEL)),
+                ('photo', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, related_name='likes', to='photo.photo')),
             ],
         ),
         migrations.CreateModel(
             name='Comment',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('content', models.TextField()),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('is_edited', models.BooleanField(default=False)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to=settings.AUTH_USER_MODEL)),
-                ('photo', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to='photo.photo')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                 related_name='comments', to=settings.AUTH_USER_MODEL)),
+                ('photo', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                 related_name='comments', to='photo.photo')),
             ],
             options={
                 'ordering': ['-created_at'],
@@ -71,12 +83,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='PhotoRating',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('rating', models.PositiveSmallIntegerField()),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('photo', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='ratings', to='photo.photo')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='ratings', to=settings.AUTH_USER_MODEL)),
+                ('photo', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                 related_name='ratings', to='photo.photo')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                 related_name='ratings', to=settings.AUTH_USER_MODEL)),
             ],
         ),
     ]

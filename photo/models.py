@@ -3,6 +3,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from cloudinary.models import CloudinaryField
 
+
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
@@ -11,6 +12,7 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Photo(models.Model):
     photographer = models.ForeignKey(
@@ -36,17 +38,23 @@ class Photo(models.Model):
     def __str__(self):
         return self.title
 
+
 class Like(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='likes')
-    photo = models.ForeignKey('Photo', on_delete=models.CASCADE, related_name='likes')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE, related_name='likes')
+    photo = models.ForeignKey(
+        'Photo', on_delete=models.CASCADE, related_name='likes')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.user.username} likes {self.photo.title}"
 
+
 class Comment(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments')
-    photo = models.ForeignKey('Photo', on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE, related_name='comments')
+    photo = models.ForeignKey(
+        'Photo', on_delete=models.CASCADE, related_name='comments')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -58,9 +66,12 @@ class Comment(models.Model):
     def __str__(self):
         return f"Comment by {self.user.username} on {self.photo.title}"
 
+
 class PhotoRating(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='ratings')
-    photo = models.ForeignKey(Photo, on_delete=models.CASCADE, related_name='ratings')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE, related_name='ratings')
+    photo = models.ForeignKey(
+        Photo, on_delete=models.CASCADE, related_name='ratings')
     rating = models.PositiveSmallIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

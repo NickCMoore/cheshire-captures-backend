@@ -35,7 +35,8 @@ class PhotoSerializer(serializers.ModelSerializer):
         read_only_fields = ['created_at', 'updated_at', 'image_url']
 
     def validate_category(self, value):
-        allowed_categories = ['Nature', 'Urban', 'Portrait', 'Event', 'Landscape']
+        allowed_categories = ['Nature', 'Urban',
+                              'Portrait', 'Event', 'Landscape']
         if value and value not in allowed_categories:
             raise serializers.ValidationError("Invalid category")
         return value
@@ -43,7 +44,8 @@ class PhotoSerializer(serializers.ModelSerializer):
     def get_user_rating(self, obj):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
-            rating = PhotoRating.objects.filter(photo=obj, user=request.user).first()
+            rating = PhotoRating.objects.filter(
+                photo=obj, user=request.user).first()
             return rating.rating if rating else None
         return None
 

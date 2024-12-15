@@ -13,11 +13,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='photographer',
             name='cover_image',
-            field=models.ImageField(default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1734130716/media/images/vestrahorn-mountains-stokksnes-iceland_shqcac.jpg', upload_to='images/'),
+            field=models.ImageField(
+                default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1734130716/media/images/vestrahorn-mountains-stokksnes-iceland_shqcac.jpg', upload_to='images/'),
         ),
         migrations.AlterField(
             model_name='photographer',
             name='profile_image',
-            field=models.ImageField(default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1734130716/media/images/vestrahorn-mountains-stokksnes-iceland_shqcac.jpg', upload_to='images/'),
+            field=models.ImageField(
+                default='https://res.cloudinary.com/dwgtce0rh/image/upload/v1734130716/media/images/vestrahorn-mountains-stokksnes-iceland_shqcac.jpg', upload_to='images/'),
         ),
     ]
